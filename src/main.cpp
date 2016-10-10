@@ -1,290 +1,31 @@
-//=============================================================================================
-// Szamitogepes grafika hazi feladat keret. Ervenyes 2011-tol.
-// A //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// sorokon beluli reszben celszeru garazdalkodni, mert a tobbit ugyis toroljuk.
-// A beadott program csak ebben a fajlban lehet, a fajl 1 byte-os ASCII karaktereket tartalmazhat.
-// Tilos:
-// - mast "beincludolni", illetve mas konyvtarat hasznalni
-// - faljmuveleteket vegezni (printf is fajlmuvelet!)
-// - new operatort hivni
-// - felesleges programsorokat a beadott programban hagyni
-// - tovabbi kommenteket a beadott programba irni a forrasmegjelolest kommentjeit kiveve
-// ---------------------------------------------------------------------------------------------
-// A feladatot ANSI C++ nyelvu forditoprogrammal ellenorizzuk, a Visual Studio-hoz kepesti elteresekrol
-// es a leggyakoribb hibakrol (pl. ideiglenes objektumot nem lehet referencia tipusnak ertekul adni)
-// a hazibeado portal ad egy osszefoglalot.
-// ---------------------------------------------------------------------------------------------
-// A feladatmegoldasokban csak olyan gl/glu/glut fuggvenyek hasznalhatok, amelyek
-// 1. Az oran a feladatkiadasig elhangzottak ES (logikai AND muvelet)
-// 2. Az alabbi listaban szerepelnek:
-// Rendering pass: glBegin, glVertex[2|3]f, glColor3f, glNormal3f, glTexCoord2f, glEnd, glDrawPixels
-// Transzformaciok: glViewport, glMatrixMode, glLoadIdentity, glMultMatrixf, gluOrtho2D,
-// glTranslatef, glRotatef, glScalef, gluLookAt, gluPerspective, glPushMatrix, glPopMatrix,
-// Illuminacio: glMaterialfv, glMaterialfv, glMaterialf, glLightfv
-// Texturazas: glGenTextures, glBindTexture, glTexParameteri, glTexImage2D, glTexEnvi,
-// Pipeline vezerles: glShadeModel, glEnable/Disable a kovetkezokre:
-// GL_LIGHTING, GL_NORMALIZE, GL_DEPTH_TEST, GL_CULL_FACE, GL_TEXTURE_2D, GL_BLEND, GL_LIGHT[0..7]
-//
-// NYILATKOZAT
-// ---------------------------------------------------------------------------------------------
-// Nev    : LUKACS LASZLO
-// Neptun : ENWBD4
-// ---------------------------------------------------------------------------------------------
-// ezennel kijelentem, hogy a feladatot magam keszitettem, es ha barmilyen segitseget igenybe vettem vagy
-// mas szellemi termeket felhasznaltam, akkor a forrast es az atvett reszt kommentekben egyertelmuen jeloltem.
-// A forrasmegjeloles kotelme vonatkozik az eloadas foliakat es a targy oktatoi, illetve a
-// grafhazi doktor tanacsait kiveve barmilyen csatornan (szoban, irasban, Interneten, stb.) erkezo minden egyeb
-// informaciora (keplet, program, algoritmus, stb.). Kijelentem, hogy a forrasmegjelolessel atvett reszeket is ertem,
-// azok helyessegere matematikai bizonyitast tudok adni. Tisztaban vagyok azzal, hogy az atvett reszek nem szamitanak
-// a sajat kontribucioba, igy a feladat elfogadasarol a tobbi resz mennyisege es minosege alapjan szuletik dontes.
-// Tudomasul veszem, hogy a forrasmegjeloles kotelmenek megsertese eseten a hazifeladatra adhato pontokat
-// negativ elojellel szamoljak el es ezzel parhuzamosan eljaras is indul velem szemben.
-//=============================================================================================
+// See LICENSE for details.
 
 #include <math.h>
 #include <stdlib.h>
+#include <GL/freeglut.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-// MsWindows-on ez is kell
 #include <windows.h>
-#endif // Win32 platform
-
-// OpenGL + GLUT
-#include <gl/freeglut.h>
-
-#define new new_nelkul_is_meg_lehet_csinalni
+#endif // to make it work on Microsoft Windows, too
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Innentol modosithatod...
+#include "Color.h"
+#include "Vector.h"
+#include "Camera.h"
+#include "LightSource.h"
+#include "Material.h"
+#include "Texture.h"
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
-#define TEXTURE_SIZE 32
 
-unsigned int g_CurrentTextureNumber = 1;
 float g_Time = 0.0f;
 float g_TimeElapsed = 0.0f;
 float g_DeltaT = 0.1f;
 
-struct Vector
-{
-	float x, y, z;
-
-	Vector() : x(0.0f), y(0.0f), z(0.0f) {	}
-	Vector(float x_in, float y_in, float z_in) : x(x_in), y(y_in), z(z_in) {	}
-
-	Vector& operator=(const Vector &rightHandSide)
-	{
-		if (this == &rightHandSide)
-			return *this;
-		this->x = rightHandSide.x;
-		this->y = rightHandSide.y;
-		this->z = rightHandSide.z;
-		return *this;
-	}
-
-	Vector& operator+=(const Vector &rightHandSide)
-	{
-		this->x += rightHandSide.x;
-		this->y += rightHandSide.y;
-		this->z += rightHandSide.z;
-		return *this;
-	}
-
-	Vector& operator-=(const Vector &rightHandSide)
-	{
-		this->x -= rightHandSide.x;
-		this->y -= rightHandSide.y;
-		this->z -= rightHandSide.z;
-		return *this;
-	}
-
-	Vector operator+(const Vector &rightHandSide) const
-	{
-		Vector result = *this;
-		result.x += rightHandSide.x;
-		result.y += rightHandSide.y;
-		result.z += rightHandSide.z;
-		return result;
-	}
-
-	Vector operator-(const Vector &rightHandSide) const
-	{
-		Vector result = *this;
-		result.x -= rightHandSide.x;
-		result.y -= rightHandSide.y;
-		result.z -= rightHandSide.z;
-		return result;
-	}
-
-	Vector& operator-()
-	{
-		this->x = -(this->x);
-		this->y = -(this->y);
-		this->z = -(this->z);
-		return *this;
-	}
-
-	Vector operator*(const float rightHandSide) const
-	{
-		Vector result = *this;
-		result.x *= rightHandSide;
-		result.y *= rightHandSide;
-		result.z *= rightHandSide;
-		return result;
-	}
-
-	float operator*(const Vector &rightHandSide)
-	{
-		return (this->x * rightHandSide.x + this->y * rightHandSide.y + this->z * rightHandSide.z);
-	}
-
-	Vector operator%(const Vector &rightHandSide)
-	{
-		Vector result = *this;
-		result.x = this->y * rightHandSide.z - this->z * rightHandSide.y;
-		result.y = this->z * rightHandSide.x - this->x * rightHandSide.z;
-		result.z = this->x * rightHandSide.y - this->y * rightHandSide.x;
-		return result;
-	}
-
-	Vector operator/(const float rightHandSide) const
-	{
-		Vector result = *this;
-		result.x = result.x / rightHandSide;
-		result.y = result.y / rightHandSide;
-		result.z = result.z / rightHandSide;
-		return result;
-	}
-
-	float Length()
-	{
-		return sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
-	}
-};
-
-struct Color
-{
-	float r, g, b;
-
-	Color() : r(0.0f), g(0.0f), b(0.0f) {	}
-	Color(float r_in, float g_in, float b_in) : r(r_in), g(g_in), b(b_in) {		}
-
-	Color& operator=(const Color &rightHandSide)
-	{
-		if (this == &rightHandSide)
-			return *this;
-		this->r = rightHandSide.r;
-		this->g = rightHandSide.g;
-		this->b = rightHandSide.b;
-		return *this;
-	}
-};
-
-struct Camera
-{
-	Vector eyePos;
-	Vector lookAt;
-	Vector upDir;
-
-	float fov;
-	float nearClippingPane;
-	float rearClippingPane;
-	int viewportLeft, viewportBottom, viewportWidth, viewportHeight;
-
-	Camera() {	}
-
-	void SetupProjection_gl()
-	{
-		glViewport(viewportLeft, viewportBottom, viewportWidth, viewportHeight);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(fov, (float)(viewportWidth) / (float)(viewportHeight), nearClippingPane, rearClippingPane);
-	}
-
-	void SetupModelView_gl()
-	{
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		gluLookAt(eyePos.x, eyePos.y, eyePos.z, lookAt.x, lookAt.y, lookAt.z, upDir.x, upDir.y, upDir.z);
-	}
-};
-
-struct LightSource
-{
-	int id;
-	Color ambientIntensity, diffuseIntensity, specularIntensity;
-	Vector position;
-
-	void Setup_gl()
-	{
-		float ambient[] = { ambientIntensity.r, ambientIntensity.g, ambientIntensity.b, 1.0f };
-		float diffuse[] = { diffuseIntensity.r, diffuseIntensity.g, diffuseIntensity.b, 1.0f };
-		float specular[] = { specularIntensity.r, specularIntensity.g, specularIntensity.b, 1.0f };
-		float direction[] = { position.x, position.y, position.z, 0.0f };
-
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-		glLightfv(GL_LIGHT0, GL_POSITION, direction);
-		glEnable(GL_LIGHT0);
-	}
-};
-
-struct Material
-{
-	bool isSpecular;
-	float shininess;
-	Color kAmbient, kDiffuse, kSpecular;
-
-	Material() {}
-
-	void Setup_gl()
-	{
-		float ambient[] = { kAmbient.r, kAmbient.g, kAmbient.b, 1.0f };
-		float diffuse[] = { kDiffuse.r, kDiffuse.g, kDiffuse.b, 1.0f };
-		float specular[] = { kSpecular.r, kSpecular.g, kSpecular.b, 1.0f };
-
-		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-		if (isSpecular)
-			glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-	}
-};
-
-struct Texture
-{
-	unsigned int id;
-	unsigned char texture[3 * TEXTURE_SIZE * TEXTURE_SIZE];
-
-	virtual void GenerateTextureArray() = 0;
-
-	void Generate()
-	{
-		glGenTextures(g_CurrentTextureNumber, &id);
-		g_CurrentTextureNumber++;
-		glBindTexture(GL_TEXTURE_2D, id);
-
-		GenerateTextureArray();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	}
-
-	void Setup_gl()
-	{
-		glColor3f(1.0f, 1.0f, 1.0f);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, id);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	}
-};
-
 struct GrassTexture : public Texture
 {
-	void GenerateTextureArray()
+	void generateTextureArray() override
 	{
 		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)
 			for (unsigned char j = 0; j < TEXTURE_SIZE; j++)
@@ -307,7 +48,7 @@ struct GrassTexture : public Texture
 
 struct RoadTexture : public Texture
 {
-	void GenerateTextureArray()
+	void generateTextureArray() override
 	{
 		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)
 			for (unsigned char j = 0; j < TEXTURE_SIZE; j++)
@@ -337,7 +78,7 @@ struct RoadTexture : public Texture
 
 struct WheelTexture : public Texture
 {
-	void GenerateTextureArray()
+	void generateTextureArray()
 	{
 		srand(glutGet(GLUT_ELAPSED_TIME));
 		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)
@@ -402,9 +143,7 @@ public:
 			}
 		}
 
-		// kocka kirajzolasa
-		// forras: Szirmay-Kalos László, Antal Gyorgy, Csonka Ferenc: Haromdimenzios grafika, animacio es jatekfejlesztes
-		// a CD mellekleten a "Forraskodok\Konyv\HelloOpenGL" eleresi uton talalhato HelloOpenGL.cpp kodfajl 283. soratol
+		// draws a cube
 		glBegin(GL_QUADS);
 		glNormal3f(0.0, 0.0, 1.0);
 		glVertex3f(cubePoints[0].x, cubePoints[0].y, cubePoints[0].z);
@@ -517,8 +256,8 @@ public:
 
 	Vector n(float u, float v)
 	{
-		Vector rDerivedU(-(sinf(u)) * cosf(v), -(sinf(u)) * cosf(v), 0.0f);
-		Vector rDerivedV(cosf(u) * -(sinf(v)), cosf(u) * -(sinf(v)), 0.0f);
+		Vector rDerivedU(-sinf(u) * cosf(v), -sinf(u) * cosf(v), 0.0f);
+		Vector rDerivedV(cosf(u) * -sinf(v), cosf(u) * -sinf(v), 0.0f);
 		return rDerivedU % rDerivedV;
 	}
 };
@@ -529,6 +268,7 @@ private:
 	float _paramA, _paramB, _paramC;
 public:
 	Ellipsoid() {}
+
 	Ellipsoid(float paramA_in, float paramB_in, float paramC_in) : ParametricSurface(-1.57079632f, 1.57079632f, 0.19634954f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _paramC(paramC_in) {}
 
 	Vector r(float u, float v)
@@ -543,8 +283,8 @@ public:
 	Vector n(float u, float v)
 	{
 		Vector result;
-		Vector rDerivedU(_paramA * -(sinf(u)) * cosf(v), _paramB * -(sinf(u)) * sinf(v), _paramC * cosf(u));
-		Vector rDerivedV(_paramA * cosf(u) * -(sinf(v)), _paramB * cosf(u) * cos(v), 0.0f);
+		Vector rDerivedU(_paramA * -sinf(u) * cosf(v), _paramB * -sinf(u) * sinf(v), _paramC * cosf(u));
+		Vector rDerivedV(_paramA * cosf(u) * -sinf(v), _paramB * cosf(u) * cosf(v), 0.0f);
 		result = rDerivedU % rDerivedV;
 		return result;
 	}
@@ -719,7 +459,7 @@ public:
 		_wheelMaterial.kSpecular = Color(0.0f, 0.0f, 0.0f);
 		_wheelMaterial.shininess = 0.0f;
 
-		_texture.Generate();
+		_texture.generate();
 	}
 
 	void Update(float deltaT)
@@ -739,7 +479,7 @@ public:
 	void TesselateAndRender_gl()
 	{
 		if (!_isShadowMode)
-			_wheelMaterial.Setup_gl();
+			_wheelMaterial.setup_gl();
 		glDisable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glTranslatef(2.0f, 0.0f, 1.0f);
@@ -766,7 +506,7 @@ public:
 		glPopMatrix();
 
 		if (!_isShadowMode)
-			_texture.Setup_gl();
+			_texture.setup_gl();
 		glPushMatrix();
 		glTranslatef(2.0f, 0.0f, -1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
@@ -781,7 +521,7 @@ public:
 		glDisable(GL_TEXTURE_2D);
 
 		if (!_isShadowMode)
-			_chassisMaterial.Setup_gl();
+			_chassisMaterial.setup_gl();
 		_chassis[0].TesselateAndRender_gl();
 		_chassis[1].TesselateAndRender_gl();
 
@@ -789,18 +529,18 @@ public:
 		_chassisMaterial.kDiffuse = Color(0.138f, 0.42f, 0.557f);
 		_chassisMaterial.shininess = 200.0f;
 		if (!_isShadowMode)
-			_chassisMaterial.Setup_gl();
+			_chassisMaterial.setup_gl();
 		_chassis[2].TesselateAndRender_gl();
 
 		_chassisMaterial.kAmbient = Color(1.0f, 0.843f, 0.0f);
 		_chassisMaterial.kDiffuse = Color(1.0f, 0.843f, 0.0f);
 		_chassisMaterial.shininess = 40.0f;
 		if (!_isShadowMode)
-			_chassisMaterial.Setup_gl();
+			_chassisMaterial.setup_gl();
 		_chassis[3].TesselateAndRender_gl();
 
 		if (!_isShadowMode)
-			_wheelMaterial.Setup_gl();
+			_wheelMaterial.setup_gl();
 		glPushMatrix();
 		glTranslatef(1.8f, 3.0f, -0.7f);
 		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
@@ -907,7 +647,7 @@ public:
 	void TesselateAndRender_gl()
 	{
 		if (!_isShadowMode)
-			_bodyMaterial.Setup_gl();
+			_bodyMaterial.setup_gl();
 		glPushMatrix();
 		glTranslatef(0.0f, 1.0f, 0.0f);
 		glRotatef(20.0f, 0.0f, 0.0f, 1.0f);
@@ -926,7 +666,7 @@ public:
 		_head.TesselateAndRender_gl();
 		glPushMatrix();
 		if (!_isShadowMode)
-			_eyeMaterial.Setup_gl();
+			_eyeMaterial.setup_gl();
 		glTranslatef(0.1f, 0.0f, 0.1f);
 		_eye.TesselateAndRender_gl();
 		glTranslatef(0.0f, 0.0f, -0.2f);
@@ -934,14 +674,14 @@ public:
 		glPopMatrix();
 		glPushMatrix();
 		if (!_isShadowMode)
-			_limbMaterial.Setup_gl();
+			_limbMaterial.setup_gl();
 		glTranslatef(0.25f, -0.028f, 0.0f);
 		glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
 		_beak.TesselateAndRender_gl();
 		glPopMatrix();
 		glPushMatrix();
 		if (!_isShadowMode)
-			_limbMaterial.Setup_gl();
+			_limbMaterial.setup_gl();
 		glTranslatef(0.12f, 0.185f, 0.0f);
 		glPushMatrix();
 		glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
@@ -962,7 +702,7 @@ public:
 		glPopMatrix();
 
 		if (!_isShadowMode)
-			_limbMaterial.Setup_gl();
+			_limbMaterial.setup_gl();
 		glPushMatrix();
 		glTranslatef(-0.08f, 0.4f, -0.2f);
 		glRotatef(-80.0f, 1.0f, 0.0f, 0.0f);
@@ -1086,9 +826,9 @@ public:
 		_cam.nearClippingPane = 1.0f;
 		_cam.rearClippingPane = 56.0f;
 
-		_cam.SetupProjection_gl();
-		_cam.SetupModelView_gl();
-		_sun.Setup_gl();
+		_cam.setupProjection_gl();
+		_cam.setupModelView_gl();
+		_sun.setup_gl();
 
 		Plane grass(100.0f, 100.0f, -0.002f, 1.0f);
 		Plane road(100.0f, 2.0f, -0.001f, 4.0f);
@@ -1107,8 +847,8 @@ public:
 		_roadMaterial.kSpecular = Color(0.0f, 0.0f, 0.0f);
 		_roadMaterial.shininess = 0.0f;
 
-		_grassyTexture.Generate();
-		_roadTexture.Generate();
+		_grassyTexture.generate();
+		_roadTexture.generate();
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -1200,7 +940,7 @@ public:
 		_shadowMatrixVariableMember_1 = -(_lightDir.x / _lightDir.y);
 		_shadowMatrixVariableMember_2 = -(_lightDir.z / _lightDir.y);
 		_sun.position = _lightDir;
-		_sun.Setup_gl();
+		_sun.setup_gl();
 		_shadowMatrix[1][0] = _shadowMatrixVariableMember_1;
 		_shadowMatrix[1][2] = _shadowMatrixVariableMember_2;
 
@@ -1222,7 +962,7 @@ public:
 				_chickenView.lookAt.z = -4.0f + _chicken[i].GetPosition().z;
 				distance = _chicken[i].GetPosition() - _roadRoller.GetPosition();
 				minimumDistance = _chicken[i].GetBoundingRadius() + _roadRoller.GetBoundingRadius();
-				if (distance.Length() < minimumDistance)
+				if (distance.length() < minimumDistance)
 				{
 					_chicken[i].SetStillAlive(false);
 				}
@@ -1232,22 +972,22 @@ public:
 
 	void Render()
 	{
-		_sun.Setup_gl();
+		_sun.setup_gl();
 
 		glColor3f(1.0f, 1.0f, 1.0f);
 
 		glPushMatrix();
 		glEnable(GL_TEXTURE_2D);
-		_grassMaterial.Setup_gl();
-		_grassyTexture.Setup_gl();
+		_grassMaterial.setup_gl();
+		_grassyTexture.setup_gl();
 
 		glPushMatrix();
 		glTranslatef(0.0f, -0.002f, 0.0f);
 		_grassy.TesselateAndRender_gl();
 		glPopMatrix();
 
-		_roadMaterial.Setup_gl();
-		_roadTexture.Setup_gl();
+		_roadMaterial.setup_gl();
+		_roadTexture.setup_gl();
 		glPushMatrix();
 		glTranslatef(0.0f, -0.001f, 0.00f);
 		_road.TesselateAndRender_gl();
@@ -1359,22 +1099,22 @@ void onDisplay()
 	glClearColor(0.0f, 0.604f, 0.804f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	g_Scene._cam.SetupProjection_gl();
-	g_Scene._cam.SetupModelView_gl();
+	g_Scene._cam.setupProjection_gl();
+	g_Scene._cam.setupModelView_gl();
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glPushMatrix();
 	g_Scene.Render();
 	glPopMatrix();
 
-	g_Scene._inCar.SetupProjection_gl();
-	g_Scene._inCar.SetupModelView_gl();
+	g_Scene._inCar.setupProjection_gl();
+	g_Scene._inCar.setupModelView_gl();
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glPushMatrix();
 	g_Scene.Render();
 	glPopMatrix();
 
-	g_Scene._chickenView.SetupProjection_gl();
-	g_Scene._chickenView.SetupModelView_gl();
+	g_Scene._chickenView.setupProjection_gl();
+	g_Scene._chickenView.setupModelView_gl();
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glPushMatrix();
 	g_Scene.Render();
@@ -1426,31 +1166,30 @@ void onIdle()
 	glutPostRedisplay();
 }
 
-// ...Idaig modosithatod
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// A C++ program belepesi pontja, a main fuggvenyt mar nem szabad bantani
+// entry point
 int main(int argc, char **argv) {
-	glutInit(&argc, argv); 				// GLUT inicializalasa
-	glutInitWindowSize(600, 600);			// Alkalmazas ablak kezdeti merete 600x600 pixel
-	glutInitWindowPosition(100, 100);			// Az elozo alkalmazas ablakhoz kepest hol tunik fel
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);	// 8 bites R,G,B,A + dupla buffer + melyseg buffer
+	glutInit(&argc, argv);
+	glutInitWindowSize(600, 600);
+	glutInitWindowPosition(100, 100);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutCreateWindow("Roadrolla'");
 
-	glutCreateWindow("Grafika hazi feladat");		// Alkalmazas ablak megszuletik es megjelenik a kepernyon
-
-	glMatrixMode(GL_MODELVIEW);				// A MODELVIEW transzformaciot egysegmatrixra inicializaljuk
+	// sets GL_MODELVIEW and GL_PROJECTION matrices to identity matrix
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glMatrixMode(GL_PROJECTION);			// A PROJECTION transzformaciot egysegmatrixra inicializaljuk
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	onInitialization();					// Az altalad irt inicializalast lefuttatjuk
+	// performs initializing tasks
+	onInitialization();
 
-	glutDisplayFunc(onDisplay);				// Esemenykezelok regisztralasa
+	// registers event handlers
+	glutDisplayFunc(onDisplay);
 	glutMouseFunc(onMouse);
 	glutIdleFunc(onIdle);
 	glutKeyboardFunc(onKeyboard);
 
-	glutMainLoop();					// Esemenykezelo hurok
+	glutMainLoop();
 
 	return 0;
 }
