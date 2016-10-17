@@ -15,6 +15,12 @@
 #include "LightSource.h"
 #include "Material.h"
 #include "Texture.h"
+#include "Textures/GrassTexture.h"
+#include "Textures/RoadTexture.h"
+#include "Textures/WheelTexture.h"
+#include "Primitive.h"
+#include "Primitives/Cube.h"
+#include <iostream>
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
@@ -23,84 +29,7 @@ float g_Time = 0.0f;
 float g_TimeElapsed = 0.0f;
 float g_DeltaT = 0.1f;
 
-struct GrassTexture : public Texture
-{
-	void generateTextureArray() override
-	{
-		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)
-			for (unsigned char j = 0; j < TEXTURE_SIZE; j++)
-			{
-				if ((i / 2 % (rand() % 7 + 1)) ^ (j / 4 % (rand() % 5 + 2)))
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)((1.0f + 0.75f * sinf((float)j * 0.125f)) * 34.0f);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)((1.0f + 0.0625f * sinf((float)i * 0.25f)) * 139.0f);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)((1.0f + 0.5f * cosf((float)j * 0.125f)) * 34.0f);
-				}
-				else
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)(0);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)(100);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)(0);
-				}
-			}
-	}
-};
-
-struct RoadTexture : public Texture
-{
-	void generateTextureArray() override
-	{
-		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)
-			for (unsigned char j = 0; j < TEXTURE_SIZE; j++)
-			{
-				if ((i / 2 % (rand() % 7 + 1)) ^ (j / 4 % (rand() % 5 + 2)))
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)(112);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)(128);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)(144);
-				}
-				else
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)((1.0f + 0.75f * sinf((float)i * 0.125f)) * 70.0f);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)((1.0f + 0.125f * cosf((float)i * 0.25f)) * 130.0f);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)((1.0f + 0.0625f * sinf((float)j * 0.125f)) * 180.0f);
-				}
-
-				if (i == TEXTURE_SIZE / 2)
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)(255);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)(236);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)(139);
-				}
-			}
-	}
-};
-
-struct WheelTexture : public Texture
-{
-	void generateTextureArray()
-	{
-		srand(glutGet(GLUT_ELAPSED_TIME));
-		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)
-			for (unsigned char j = 0; j < TEXTURE_SIZE; j++)
-			{
-				if ((i / 2 % (rand() % 7 + 1)) ^ (j / 4 % (rand() % 5 + 2)))
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)(1);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)(1);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)(16);
-				}
-				else
-				{
-					texture[i * 3 * TEXTURE_SIZE + 3 * j] = (unsigned char)((1.0f + 0.133f * sinf((float)i * 0.125f)) * 112.0f);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 1] = (unsigned char)((1.0f + 0.125f * cosf((float)i * 0.25f)) * 128.0f);
-					texture[i * 3 * TEXTURE_SIZE + 3 * j + 2] = (unsigned char)((1.0f + 0.0625f * sinf((float)j * 0.125f)) * 144.0f);
-				}
-			}
-	}
-};
-
-class Primitive
+class LegacyPrimitive
 {
 protected:
 	bool isTextured;
@@ -109,82 +38,7 @@ public:
 	virtual void TesselateAndRender_gl() = 0;
 };
 
-class Cube : public Primitive
-{
-private:
-	float _width, _height, _depth;
-	Vector _startPoint;
-public:
-	Cube() {}
-	Cube(float startX_in, float startY_in, float startZ_in, float width_in, float height_in, float depth_in) : _width(width_in), _height(height_in), _depth(depth_in), _startPoint(startX_in, startY_in, startZ_in) {}
-
-	virtual void TesselateAndRender_gl()
-	{
-		Vector cubePoints[8];
-		float height = -_height;
-		float width = -_width;
-		float depth = -_depth;
-
-		float x = 0.0f, y = 0.0f, z = 0.0f;
-		for (int i = 0; i < 2; i++)
-		{
-			z = _startPoint.z + i * depth;
-			for (int j = 0; j < 2; j++)
-			{
-				y = _startPoint.y + j * height;
-				for (int k = 0; k < 2; k++)
-				{
-					if ((j == 1) ^ (k == 1))
-						x = _startPoint.x + width;
-					else
-						x = _startPoint.x;
-					cubePoints[4 * i + 2 * j + k] = Vector(x, y, z);
-				}
-			}
-		}
-
-		// draws a cube
-		glBegin(GL_QUADS);
-		glNormal3f(0.0, 0.0, 1.0);
-		glVertex3f(cubePoints[0].x, cubePoints[0].y, cubePoints[0].z);
-		glVertex3f(cubePoints[1].x, cubePoints[1].y, cubePoints[1].z);
-		glVertex3f(cubePoints[2].x, cubePoints[2].y, cubePoints[2].z);
-		glVertex3f(cubePoints[3].x, cubePoints[3].y, cubePoints[3].z);
-
-		glNormal3f(0.0, 0.0, -1.0);
-		glVertex3f(cubePoints[6].x, cubePoints[6].y, cubePoints[6].z);
-		glVertex3f(cubePoints[5].x, cubePoints[5].y, cubePoints[5].z);
-		glVertex3f(cubePoints[4].x, cubePoints[4].y, cubePoints[4].z);
-		glVertex3f(cubePoints[7].x, cubePoints[7].y, cubePoints[7].z);
-
-		glNormal3f(0.0, 1.0, 0.0);
-		glVertex3f(cubePoints[0].x, cubePoints[0].y, cubePoints[0].z);
-		glVertex3f(cubePoints[4].x, cubePoints[4].y, cubePoints[4].z);
-		glVertex3f(cubePoints[5].x, cubePoints[5].y, cubePoints[5].z);
-		glVertex3f(cubePoints[1].x, cubePoints[1].y, cubePoints[1].z);
-
-		glNormal3f(0.0, -1.0, 0.0);
-		glVertex3f(cubePoints[6].x, cubePoints[6].y, cubePoints[6].z);
-		glVertex3f(cubePoints[7].x, cubePoints[7].y, cubePoints[7].z);
-		glVertex3f(cubePoints[3].x, cubePoints[3].y, cubePoints[3].z);
-		glVertex3f(cubePoints[2].x, cubePoints[2].y, cubePoints[2].z);
-
-		glNormal3f(1.0, 0.0, 0.0);
-		glVertex3f(cubePoints[0].x, cubePoints[0].y, cubePoints[0].z);
-		glVertex3f(cubePoints[3].x, cubePoints[3].y, cubePoints[3].z);
-		glVertex3f(cubePoints[7].x, cubePoints[7].y, cubePoints[7].z);
-		glVertex3f(cubePoints[4].x, cubePoints[4].y, cubePoints[4].z);
-
-		glNormal3f(-1.0, 0.0, 0.0);
-		glVertex3f(cubePoints[6].x, cubePoints[6].y, cubePoints[6].z);
-		glVertex3f(cubePoints[2].x, cubePoints[2].y, cubePoints[2].z);
-		glVertex3f(cubePoints[1].x, cubePoints[1].y, cubePoints[1].z);
-		glVertex3f(cubePoints[5].x, cubePoints[5].y, cubePoints[5].z);
-		glEnd();
-	}
-};
-
-class ParametricSurface : Primitive
+class LegacyParametricSurface : LegacyPrimitive
 {
 protected:
 	float _uMinValue, _uMaxValue, _uStep;
@@ -192,8 +46,8 @@ protected:
 	bool _hasShadow;
 public:
 	float lightX, lightY;
-	ParametricSurface() {}
-	ParametricSurface(float uMin_in, float uMax_in, float uStep_in, float vMin_in, float vMax_in, float vStep_in, bool hasShadow_in) : _uMinValue(uMin_in), _uMaxValue(uMax_in), _uStep(uStep_in), _vMinValue(vMin_in), _vMaxValue(vMax_in), _vStep(vStep_in), _hasShadow(hasShadow_in) {	}
+	LegacyParametricSurface() {}
+	LegacyParametricSurface(float uMin_in, float uMax_in, float uStep_in, float vMin_in, float vMax_in, float vStep_in, bool hasShadow_in) : _uMinValue(uMin_in), _uMaxValue(uMax_in), _uStep(uStep_in), _vMinValue(vMin_in), _vMaxValue(vMax_in), _vStep(vStep_in), _hasShadow(hasShadow_in) {	}
 
 	virtual Vector r(float u, float v) = 0;
 	virtual Vector n(float u, float v) = 0;
@@ -237,13 +91,13 @@ public:
 	}
 };
 
-class Circle : public ParametricSurface
+class Circle : public LegacyParametricSurface
 {
 private:
 	float _paramA, _paramB, _radius, _resolution;
 public:
 	Circle() {}
-	Circle(float paramA_in, float paramB_in, float radius_in, float resolution_in) : ParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _resolution(resolution_in) {}
+	Circle(float paramA_in, float paramB_in, float radius_in, float resolution_in) : LegacyParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _resolution(resolution_in) {}
 
 	Vector r(float u, float v)
 	{
@@ -262,14 +116,14 @@ public:
 	}
 };
 
-class Ellipsoid : public ParametricSurface
+class Ellipsoid : public LegacyParametricSurface
 {
 private:
 	float _paramA, _paramB, _paramC;
 public:
 	Ellipsoid() {}
 
-	Ellipsoid(float paramA_in, float paramB_in, float paramC_in) : ParametricSurface(-1.57079632f, 1.57079632f, 0.19634954f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _paramC(paramC_in) {}
+	Ellipsoid(float paramA_in, float paramB_in, float paramC_in) : LegacyParametricSurface(-1.57079632f, 1.57079632f, 0.19634954f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _paramC(paramC_in) {}
 
 	Vector r(float u, float v)
 	{
@@ -290,13 +144,13 @@ public:
 	}
 };
 
-class Cylinder : public ParametricSurface
+class Cylinder : public LegacyParametricSurface
 {
 private:
 	float _paramA, _paramB, _radius, _height, _resolution;
 public:
 	Cylinder() {}
-	Cylinder(float paramA_in, float paramB_in, float radius_in, float height_in, float resolution_in) : ParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, 0, height_in, height_in / resolution_in, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _height(height_in), _resolution(resolution_in) {}
+	Cylinder(float paramA_in, float paramB_in, float radius_in, float height_in, float resolution_in) : LegacyParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, 0, height_in, height_in / resolution_in, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _height(height_in), _resolution(resolution_in) {}
 
 	Vector r(float u, float v)
 	{
@@ -315,13 +169,13 @@ public:
 	}
 };
 
-class Cone : public ParametricSurface
+class Cone : public LegacyParametricSurface
 {
 private:
 	float _paramA, _paramB, _radius, _height, _resolution;
 public:
 	Cone() {}
-	Cone(float paramA_in, float paramB_in, float radius_in, float height_in, float resolution_in) : ParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -(height_in / 2.0f), (height_in / 2.0f), height_in / resolution_in, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _height(height_in), _resolution(resolution_in) {}
+	Cone(float paramA_in, float paramB_in, float radius_in, float height_in, float resolution_in) : LegacyParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -(height_in / 2.0f), (height_in / 2.0f), height_in / resolution_in, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _height(height_in), _resolution(resolution_in) {}
 
 	Vector r(float u, float v)
 	{
@@ -353,13 +207,13 @@ public:
 	}
 };
 
-class Plane : public ParametricSurface
+class Plane : public LegacyParametricSurface
 {
 private:
 	float _height, _resolution;
 public:
 	Plane() {}
-	Plane(float width_in, float depth_in, float height_in, float resolution_in) : ParametricSurface(-(width_in / 2.0f), width_in / 2.0f, width_in / resolution_in, -(depth_in / 2.0f), depth_in / 2.0f, depth_in / resolution_in, false), _height(height_in), _resolution(resolution_in) {}
+	Plane(float width_in, float depth_in, float height_in, float resolution_in) : LegacyParametricSurface(-(width_in / 2.0f), width_in / 2.0f, width_in / resolution_in, -(depth_in / 2.0f), depth_in / 2.0f, depth_in / resolution_in, false), _height(height_in), _resolution(resolution_in) {}
 
 	Vector r(float u, float v)
 	{
@@ -378,7 +232,7 @@ public:
 	}
 };
 
-class ObjectBase : public Primitive
+class ObjectBase : public LegacyPrimitive
 {
 protected:
 	bool _isShadowMode;
@@ -409,13 +263,14 @@ private:
 	float _rotateFi;
 	Circle _wheelSide;
 	Cylinder _wheel, _exhaust;
-	Cube _chassis[4];
+	Cube* _chassis[4];
 	WheelTexture _texture;
 	Material _chassisMaterial, _wheelMaterial;
 
-
 public:
-	RoadRoller() {}
+	RoadRoller()
+	{
+	}
 
 	void Build()
 	{
@@ -430,10 +285,15 @@ public:
 		_rotateFi = 0.0f;
 		_boundingRadius = 1.5f;
 
-		Cube chassisBottom(1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 2.0f);
-		Cube chassisMiddle(3.0f, 1.5f, 1.0f, 6.0f, 0.5f, 2.0f);
-		Cube chassisCockpit(1.0f, 1.5f, 0.7f, 2.0f, -1.5f, 1.4f);
-		Cube chassisTop(1.13f, 3.0f, 1.13f, 2.26f, -0.13f, 2.26f);
+		Cube* chassisBottom = new Cube(1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 2.0f);
+		Cube* chassisMiddle = new Cube(3.0f, 1.5f, 1.0f, 6.0f, 0.5f, 2.0f);
+		Cube* chassisCockpit = new Cube(1.0f, 1.5f, 0.7f, 2.0f, -1.5f, 1.4f);
+		Cube* chassisTop = new Cube(1.13f, 3.0f, 1.13f, 2.26f, -0.13f, 2.26f);
+
+		chassisBottom->tesselate();
+		chassisMiddle->tesselate();
+		chassisCockpit->tesselate();
+		chassisTop->tesselate();
 
 		_wheelSide.lightX = _wheel.lightX = _exhaust.lightX = -4.0f;
 		_wheelSide.lightY = _wheel.lightY = _exhaust.lightY = 8.0f;
@@ -522,22 +382,22 @@ public:
 
 		if (!_isShadowMode)
 			_chassisMaterial.setup_gl();
-		_chassis[0].TesselateAndRender_gl();
-		_chassis[1].TesselateAndRender_gl();
+		_chassis[0]->render();
+		_chassis[1]->render();
 
 		_chassisMaterial.kAmbient = Color(0.138f, 0.42f, 0.557f);
 		_chassisMaterial.kDiffuse = Color(0.138f, 0.42f, 0.557f);
 		_chassisMaterial.shininess = 200.0f;
 		if (!_isShadowMode)
 			_chassisMaterial.setup_gl();
-		_chassis[2].TesselateAndRender_gl();
+		_chassis[2]->render();
 
 		_chassisMaterial.kAmbient = Color(1.0f, 0.843f, 0.0f);
 		_chassisMaterial.kDiffuse = Color(1.0f, 0.843f, 0.0f);
 		_chassisMaterial.shininess = 40.0f;
 		if (!_isShadowMode)
 			_chassisMaterial.setup_gl();
-		_chassis[3].TesselateAndRender_gl();
+		_chassis[3]->render();
 
 		if (!_isShadowMode)
 			_wheelMaterial.setup_gl();
@@ -1166,6 +1026,11 @@ void onIdle()
 	glutPostRedisplay();
 }
 
+void onExit()
+{
+	std::cout << "Bye.";
+}
+
 // entry point
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
@@ -1173,6 +1038,7 @@ int main(int argc, char **argv) {
 	glutInitWindowPosition(100, 100);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("Roadrolla'");
+	atexit(onExit);
 
 	// sets GL_MODELVIEW and GL_PROJECTION matrices to identity matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -1190,6 +1056,10 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(onKeyboard);
 
 	glutMainLoop();
+
+#if defined(_DEBUG) && (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+	_CrtDumpMemoryLeaks();
+#endif
 
 	return 0;
 }

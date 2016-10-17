@@ -146,13 +146,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Primitive.cpp" />
+    <ClCompile Include="src\Primitives\Cube.cpp" />
+    <ClCompile Include="src\Primitives\ParametricSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\LightSource.h" />
     <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\Primitive.h" />
+    <ClInclude Include="src\Primitives\Cube.h" />
+    <ClInclude Include="src\Primitives\ParametricSurface.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Textures\GrassTexture.h" />
+    <ClInclude Include="src\Textures\RoadTexture.h" />
+    <ClInclude Include="src\Textures\WheelTexture.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
