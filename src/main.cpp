@@ -21,6 +21,7 @@
 #include "Primitive.h"
 #include "Primitives/Cube.h"
 #include <iostream>
+#include "Primitives/Circle.h"
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
@@ -75,13 +76,13 @@ public:
 				glVertex3f(rVec.x, rVec.y, rVec.z);
 
 				rVec = r(u + _uStep, v + _vStep);
-				nVec = n(u + _uStep, v);
+				nVec = n(u + _uStep, v + _vStep);
 				glTexCoord2f(u + _uStep, v + _vStep);
 				glNormal3f(nVec.x, nVec.y, nVec.z);
 				glVertex3f(rVec.x, rVec.y, rVec.z);
 
 				rVec = r(u, v + _vStep);
-				nVec = n(u + _uStep, v);
+				nVec = n(u, v + _vStep);
 				glTexCoord2f(u, v + _vStep);
 				glNormal3f(nVec.x, nVec.y, nVec.z);
 				glVertex3f(rVec.x, rVec.y, rVec.z);
@@ -91,38 +92,12 @@ public:
 	}
 };
 
-class Circle : public LegacyParametricSurface
-{
-private:
-	float _paramA, _paramB, _radius, _resolution;
-public:
-	Circle() {}
-	Circle(float paramA_in, float paramB_in, float radius_in, float resolution_in) : LegacyParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _resolution(resolution_in) {}
-
-	Vector r(float u, float v)
-	{
-		Vector result;
-		result.x = _paramA + cosf(u) * cosf(v);
-		result.y = _paramB + cosf(u) * sinf(v);
-		result.z = 0.0f;
-		return result;
-	}
-
-	Vector n(float u, float v)
-	{
-		Vector rDerivedU(-sinf(u) * cosf(v), -sinf(u) * cosf(v), 0.0f);
-		Vector rDerivedV(cosf(u) * -sinf(v), cosf(u) * -sinf(v), 0.0f);
-		return rDerivedU % rDerivedV;
-	}
-};
-
 class Ellipsoid : public LegacyParametricSurface
 {
 private:
 	float _paramA, _paramB, _paramC;
 public:
 	Ellipsoid() {}
-
 	Ellipsoid(float paramA_in, float paramB_in, float paramC_in) : LegacyParametricSurface(-1.57079632f, 1.57079632f, 0.19634954f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _paramC(paramC_in) {}
 
 	Vector r(float u, float v)
@@ -261,7 +236,7 @@ class RoadRoller : public ObjectBase
 private:
 	float _rotateVelocity;
 	float _rotateFi;
-	Circle _wheelSide;
+	Circle* _wheelSide;
 	Cylinder _wheel, _exhaust;
 	Cube* _chassis[4];
 	WheelTexture _texture;
@@ -272,11 +247,19 @@ public:
 	{
 	}
 
+	~RoadRoller()
+	{
+		if (_wheelSide != nullptr)
+		{
+			delete _wheelSide;
+		}
+	}
+
 	void Build()
 	{
 		Vector nullVec = Vector(0.0f, 0.0f, 0.0f);
 
-		Circle wheelSide(0.0f, 0.0f, 0.3f, 1.0f);
+		Circle* wheelSide = new Circle(0.0f, 0.0f, 0.3f, 1.0f);
 		Cylinder wheel(0.0f, 0.0f, 1.0f, 2.0f, 1.0f);
 		Cylinder exhaust(0.0f, 0.0f, 0.16f, 2.0f, 1.0f);
 
@@ -295,8 +278,10 @@ public:
 		chassisCockpit->tesselate();
 		chassisTop->tesselate();
 
-		_wheelSide.lightX = _wheel.lightX = _exhaust.lightX = -4.0f;
-		_wheelSide.lightY = _wheel.lightY = _exhaust.lightY = 8.0f;
+		wheelSide->tesselate();
+
+		wheelSide->lightX = _wheel.lightX = _exhaust.lightX = -4.0f;
+		wheelSide->lightY = _wheel.lightY = _exhaust.lightY = 8.0f;
 
 		_wheelSide = wheelSide;
 		_wheel = wheel;
@@ -344,25 +329,25 @@ public:
 		glPushMatrix();
 		glTranslatef(2.0f, 0.0f, 1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheelSide.TesselateAndRender_gl();
+		_wheelSide->render();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(2.0f, 0.0f, -1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheelSide.TesselateAndRender_gl();
+		_wheelSide->render();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(-2.0f, 0.0f, 1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheelSide.TesselateAndRender_gl();
+		_wheelSide->render();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(-2.0f, 0.0f, -1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheelSide.TesselateAndRender_gl();
+		_wheelSide->TesselateAndRender_gl();
 		glPopMatrix();
 
 		if (!_isShadowMode)

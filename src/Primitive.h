@@ -8,10 +8,11 @@ class Primitive
 {
 protected:
 	int _vertexBufferLength;
-	Vector** _pVertexBuffer;
+	Vector** _vertexBuffer;
 	Material _material;
 
 public:
+	Primitive();
 	virtual void tesselate() = 0;
 	virtual void render() = 0;
 	virtual ~Primitive();

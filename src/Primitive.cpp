@@ -1,9 +1,16 @@
 #include "Primitive.h"
 
+Primitive::Primitive()
+{
+	this->_vertexBuffer = nullptr;
+	this->_vertexBufferLength = 0;
+}
+
 Primitive::~Primitive()
 {
-	if (pVertexBuffer_ != nullptr) {
-		delete[] pVertexBuffer_;
-		pVertexBuffer_ = nullptr;
+	if (_vertexBuffer != nullptr) {
+		delete[] this->_vertexBuffer;
+		this->_vertexBuffer = nullptr;
+		this->_vertexBufferLength = 0;
 	}
 }

@@ -39,6 +39,9 @@
     <ClCompile Include="src\Primitives\ParametricSurface.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
+    <ClCompile Include="src\Primitives\Circle.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vector.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="src\Primitives\ParametricSurface.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Primitives\Circle.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
   </ItemGroup>

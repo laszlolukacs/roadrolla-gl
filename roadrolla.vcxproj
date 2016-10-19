@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Primitive.cpp" />
+    <ClCompile Include="src\Primitives\Circle.cpp" />
     <ClCompile Include="src\Primitives\Cube.cpp" />
     <ClCompile Include="src\Primitives\ParametricSurface.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="src\LightSource.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Primitive.h" />
+    <ClInclude Include="src\Primitives\Circle.h" />
     <ClInclude Include="src\Primitives\Cube.h" />
     <ClInclude Include="src\Primitives\ParametricSurface.h" />
     <ClInclude Include="src\Texture.h" />
