@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif // to make it work on Microsoft Windows, too
 
-
+#include <iostream>
 #include "Color.h"
 #include "Vector.h"
 #include "Camera.h"
@@ -20,8 +20,9 @@
 #include "Textures/WheelTexture.h"
 #include "Primitive.h"
 #include "Primitives/Cube.h"
-#include <iostream>
 #include "Primitives/Circle.h"
+#include "Primitives/Ellipsoid.h"
+#include "Primitives/Cylinder.h"
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
@@ -92,57 +93,7 @@ public:
 	}
 };
 
-class Ellipsoid : public LegacyParametricSurface
-{
-private:
-	float _paramA, _paramB, _paramC;
-public:
-	Ellipsoid() {}
-	Ellipsoid(float paramA_in, float paramB_in, float paramC_in) : LegacyParametricSurface(-1.57079632f, 1.57079632f, 0.19634954f, -3.1415926535f, 3.1415926535f, 0.39269908f, true), _paramA(paramA_in), _paramB(paramB_in), _paramC(paramC_in) {}
 
-	Vector r(float u, float v)
-	{
-		Vector result;
-		result.x = _paramA * cosf(u) * cosf(v);
-		result.y = _paramB * cosf(u) * sinf(v);
-		result.z = _paramC * sinf(u);
-		return result;
-	}
-
-	Vector n(float u, float v)
-	{
-		Vector result;
-		Vector rDerivedU(_paramA * -sinf(u) * cosf(v), _paramB * -sinf(u) * sinf(v), _paramC * cosf(u));
-		Vector rDerivedV(_paramA * cosf(u) * -sinf(v), _paramB * cosf(u) * cosf(v), 0.0f);
-		result = rDerivedU % rDerivedV;
-		return result;
-	}
-};
-
-class Cylinder : public LegacyParametricSurface
-{
-private:
-	float _paramA, _paramB, _radius, _height, _resolution;
-public:
-	Cylinder() {}
-	Cylinder(float paramA_in, float paramB_in, float radius_in, float height_in, float resolution_in) : LegacyParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, 0, height_in, height_in / resolution_in, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _height(height_in), _resolution(resolution_in) {}
-
-	Vector r(float u, float v)
-	{
-		Vector result;
-		result.x = _paramA + _radius * cosf(u);
-		result.y = _paramB + _radius * sinf(u);
-		result.z = _resolution * v;
-		return result;
-	}
-
-	Vector n(float u, float v)
-	{
-		Vector rDerivedU(_radius * -(sinf(u)), _radius * cosf(u), 0.0f);
-		Vector rDerivedV(0.0f, 0.0f, _resolution);
-		return rDerivedU % rDerivedV;
-	}
-};
 
 class Cone : public LegacyParametricSurface
 {
@@ -237,7 +188,7 @@ private:
 	float _rotateVelocity;
 	float _rotateFi;
 	Circle* _wheelSide;
-	Cylinder _wheel, _exhaust;
+	Cylinder *_wheel, *_exhaust;
 	Cube* _chassis[4];
 	WheelTexture _texture;
 	Material _chassisMaterial, _wheelMaterial;
@@ -260,8 +211,8 @@ public:
 		Vector nullVec = Vector(0.0f, 0.0f, 0.0f);
 
 		Circle* wheelSide = new Circle(0.0f, 0.0f, 0.3f, 1.0f);
-		Cylinder wheel(0.0f, 0.0f, 1.0f, 2.0f, 1.0f);
-		Cylinder exhaust(0.0f, 0.0f, 0.16f, 2.0f, 1.0f);
+		Cylinder* wheel = new Cylinder(0.0f, 0.0f, 1.0f, 2.0f, 1.0f);
+		Cylinder* exhaust = new Cylinder(0.0f, 0.0f, 0.16f, 2.0f, 1.0f);
 
 		_acceleration = _velocity = _position = nullVec;
 		_rotateVelocity = 0.0f;
@@ -279,9 +230,11 @@ public:
 		chassisTop->tesselate();
 
 		wheelSide->tesselate();
+		wheel->tesselate();
+		exhaust->tesselate();
 
-		wheelSide->lightX = _wheel.lightX = _exhaust.lightX = -4.0f;
-		wheelSide->lightY = _wheel.lightY = _exhaust.lightY = 8.0f;
+		wheelSide->lightX = wheel->lightX = exhaust->lightX = -4.0f;
+		wheelSide->lightY = wheel->lightY = exhaust->lightY = 8.0f;
 
 		_wheelSide = wheelSide;
 		_wheel = wheel;
@@ -347,7 +300,7 @@ public:
 		glPushMatrix();
 		glTranslatef(-2.0f, 0.0f, -1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheelSide->TesselateAndRender_gl();
+		_wheelSide->render();
 		glPopMatrix();
 
 		if (!_isShadowMode)
@@ -355,13 +308,13 @@ public:
 		glPushMatrix();
 		glTranslatef(2.0f, 0.0f, -1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheel.TesselateAndRender_gl();
+		_wheel->render();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(-2.0f, 0.0f, -1.0f);
 		glRotatef(_rotateFi, 0.0f, 0.0f, 1.0f);
-		_wheel.TesselateAndRender_gl();
+		_wheel->render();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
 
@@ -389,7 +342,7 @@ public:
 		glPushMatrix();
 		glTranslatef(1.8f, 3.0f, -0.7f);
 		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-		_exhaust.TesselateAndRender_gl();
+		_exhaust->render();
 		glPopMatrix();
 	}
 };
@@ -400,8 +353,8 @@ private:
 	bool _isAlive;
 	bool _isMoving;
 
-	Ellipsoid _body, _head, _eye, _knee;
-	Cylinder _neck, _upperLeg;
+	Ellipsoid *_body, *_head, *_eye, *_knee;
+	Cylinder *_neck, *_upperLeg;
 	Cone _beak, _mohawk;
 
 	Material _eyeMaterial;
@@ -415,18 +368,26 @@ public:
 	{
 		Vector nullVec = Vector();
 
-		Ellipsoid body(0.5f, 0.3f, 0.2f);
-		Ellipsoid head(0.2f, 0.1f, 0.1f);
-		Ellipsoid eye(0.02f, 0.02f, 0.02f);
-		Ellipsoid knee(0.04f, 0.04f, 0.04f);
-		Cylinder neck(0.0f, 0.0f, 0.08f, 0.6f, 1.0f);
-		Cylinder upperLeg(0.0f, 0.0f, 0.03f, 0.5f, 1.0f);
+		Ellipsoid* body = new Ellipsoid(0.5f, 0.3f, 0.2f);
+		Ellipsoid* head = new Ellipsoid(0.2f, 0.1f, 0.1f);
+		Ellipsoid* eye = new Ellipsoid(0.02f, 0.02f, 0.02f);
+		Ellipsoid* knee = new Ellipsoid(0.04f, 0.04f, 0.04f);
+		Cylinder* neck = new Cylinder(0.0f, 0.0f, 0.08f, 0.6f, 1.0f);
+		Cylinder* upperLeg = new Cylinder(0.0f, 0.0f, 0.03f, 0.5f, 1.0f);
 		Cone beak(0.0f, 0.0f, 0.04f, 0.2f, 1.0f);
 		Cone mohawk(0.0f, 0.0f, 0.03f, 0.23f, 1.0f);
 
 		_isAlive = true;
 		_acceleration = _velocity = _position = nullVec;
 		_boundingRadius = 0.4f;
+
+		body->tesselate();
+		head->tesselate();
+		eye->tesselate();
+		knee->tesselate();
+
+		neck->tesselate();
+		upperLeg->tesselate();
 
 		_body = body;
 		_head = head;
@@ -496,26 +457,26 @@ public:
 		glPushMatrix();
 		glTranslatef(0.0f, 1.0f, 0.0f);
 		glRotatef(20.0f, 0.0f, 0.0f, 1.0f);
-		_body.TesselateAndRender_gl();
+		_body->render();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0.3f, 1.6f, 0.0f);
 		glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
 		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-		_neck.TesselateAndRender_gl();
+		_neck->render();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0.4f, 1.6f, 0.0f);
-		_head.TesselateAndRender_gl();
+		_head->render();
 		glPushMatrix();
 		if (!_isShadowMode)
 			_eyeMaterial.setup_gl();
 		glTranslatef(0.1f, 0.0f, 0.1f);
-		_eye.TesselateAndRender_gl();
+		_eye->render();
 		glTranslatef(0.0f, 0.0f, -0.2f);
-		_eye.TesselateAndRender_gl();
+		_eye->render();
 		glPopMatrix();
 		glPushMatrix();
 		if (!_isShadowMode)
@@ -552,16 +513,16 @@ public:
 		glTranslatef(-0.08f, 0.4f, -0.2f);
 		glRotatef(-80.0f, 1.0f, 0.0f, 0.0f);
 		glRotatef(20.0f, 0.0f, 1.0f, 0.0f);
-		_upperLeg.TesselateAndRender_gl();
+		_upperLeg->render();
 		glPushMatrix();
-		_knee.TesselateAndRender_gl();
+		_knee->render();
 		glRotatef(120.0f, 0.0f, 1.0f, 0.0f);
-		_upperLeg.TesselateAndRender_gl();
+		_upperLeg->render();
 		glPushMatrix();
 		glTranslatef(0.0f, 0.0f, 0.5f);
 		glRotatef(-60.0f, 0.0f, 1.0f, 0.0f);
-		_knee.TesselateAndRender_gl();
-		_upperLeg.TesselateAndRender_gl();
+		_knee->render();
+		_upperLeg->render();
 		glPopMatrix();
 		glPopMatrix();
 		glPopMatrix();
@@ -570,16 +531,16 @@ public:
 		glTranslatef(-0.08f, 0.4f, 0.2f);
 		glRotatef(-110.0f, 1.0f, 0.0f, 0.0f);
 		glRotatef(20.0f, 0.0f, 1.0f, 0.0f);
-		_upperLeg.TesselateAndRender_gl();
+		_upperLeg->render();
 		glPushMatrix();
-		_knee.TesselateAndRender_gl();
+		_knee->render();
 		glRotatef(120.0f, 0.0f, 1.0f, 0.0f);
-		_upperLeg.TesselateAndRender_gl();
+		_upperLeg->render();
 		glPushMatrix();
 		glTranslatef(0.0f, 0.0f, 0.5f);
 		glRotatef(-60.0f, 0.0f, 1.0f, 0.0f);
-		_knee.TesselateAndRender_gl();
-		_upperLeg.TesselateAndRender_gl();
+		_knee->render();
+		_upperLeg->render();
 		glPopMatrix();
 		glPopMatrix();
 		glPopMatrix();

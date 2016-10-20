@@ -1,6 +1,6 @@
 #include "Circle.h"
 
-Vector* Circle::direction(float u, float v)
+Vector* Circle::position(float u, float v)
 {
 	Vector* result = new Vector();
 	result->x = _paramA + cosf(u) * cosf(v);

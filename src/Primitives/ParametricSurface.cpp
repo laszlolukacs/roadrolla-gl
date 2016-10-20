@@ -27,16 +27,8 @@ void ParametricSurface::tesselate()
 		}
 	}
 
-	if (_vertexBuffer != nullptr) {
-		delete[] _vertexBuffer;
-	}
-
 	_vertexBufferLength = 0;
 	_vertexBuffer = new Vector*[bufferLength];
-
-	if (_normalBuffer != nullptr) {
-		delete[] _normalBuffer;
-	}
 
 	_normalBufferLength = 0;
 	_normalBuffer = new Vector*[bufferLength];
@@ -47,7 +39,7 @@ void ParametricSurface::tesselate()
 		int j = 0;
 		for (float v = _vMin; v < _vMax + _vStep; v += _vStep)
 		{
-			_vertexBuffer[j + (_vLength - 1) * i] = direction(u, v);
+			_vertexBuffer[j + (_vLength - 1) * i] = position(u, v);
 			_vertexBufferLength++;
 
 			_normalBuffer[j + (_vLength - 1) * i] = normal(u, v);
@@ -62,40 +54,23 @@ void ParametricSurface::tesselate()
 
 void ParametricSurface::render()
 {
-	Vector* rVec;
-	Vector* nVec;
-
 	glEnable(GL_NORMALIZE);
-	glBegin(GL_QUADS);
+	glBegin(GL_TRIANGLES);
 	int i = 0;
 	for (float u = _uMin; u < _uMax; u += _uStep)
 	{
 		int j = 0;
 		for (float v = _vMin; v < _vMax; v += _vStep)
 		{
-			rVec = _vertexBuffer[j + (_vLength - 2) * i];
-			nVec = _normalBuffer[j + (_vLength - 2) * i];
-			glTexCoord2f(u, v);
-			glNormal3f(nVec->x, nVec->y, nVec->z);
-			glVertex3f(rVec->x, rVec->y, rVec->z);
+			// draws the first triangle of the 'quad', { v0, v1, v2 }
+			renderVertexPositionNormalTexture(u, v, i, j);
+			renderVertexPositionNormalTexture(u + _uStep, v, i + 1, j);
+			renderVertexPositionNormalTexture(u + _uStep, v + _vStep, i + 1, j + 1);
 
-			rVec = _vertexBuffer[j + (_vLength - 2) * (i + 1)];
-			nVec = _normalBuffer[j + (_vLength - 2) * (i + 1)];
-			glTexCoord2f(u + _uStep, v);
-			glNormal3f(nVec->x, nVec->y, nVec->z);
-			glVertex3f(rVec->x, rVec->y, rVec->z);
-
-			rVec = _vertexBuffer[(j + 1) + (_vLength - 2) * (i + 1)];
-			nVec = _normalBuffer[(j + 1) + (_vLength - 2) * (i + 1)];
-			glTexCoord2f(u + _uStep, v + _vStep);
-			glNormal3f(nVec->x, nVec->y, nVec->z);
-			glVertex3f(rVec->x, rVec->y, rVec->z);
-
-			rVec = _vertexBuffer[(j + 1) + (_vLength - 2) * i];
-			nVec = _normalBuffer[(j + 1) + (_vLength - 2) * i];
-			glTexCoord2f(u, v + _vStep);
-			glNormal3f(nVec->x, nVec->y, nVec->z);
-			glVertex3f(rVec->x, rVec->y, rVec->z);
+			// draws the second triangle of the 'quad', { v0, v2, v3}
+			renderVertexPositionNormalTexture(u, v, i, j);
+			renderVertexPositionNormalTexture(u + _uStep, v + _vStep, i + 1, j + 1);
+			renderVertexPositionNormalTexture(u, v + _vStep, i, j + 1);
 
 			j++;
 		}
@@ -104,6 +79,16 @@ void ParametricSurface::render()
 	}
 
 	glEnd();
+}
+
+void ParametricSurface::renderVertexPositionNormalTexture(float u, float v, int i, int j) const
+{
+	Vector* vertex = _vertexBuffer[j + (_vLength - 2) * i];
+	Vector* normal = _normalBuffer[j + (_vLength - 2) * i];
+
+	glTexCoord2f(u, v);
+	glNormal3f(normal->x, normal->y, normal->z);
+	glVertex3f(vertex->x, vertex->y, vertex->z);
 }
 
 ParametricSurface::~ParametricSurface()

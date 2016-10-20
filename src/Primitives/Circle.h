@@ -12,7 +12,7 @@ public:
 	Circle() {}
 	Circle(float paramA_in, float paramB_in, float radius_in, float resolution_in) : ParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -3.1415926535f, 3.1415926535f, 0.39269908f), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _resolution(resolution_in) {}
 
-	Vector* direction(float u, float v) override;
+	Vector* position(float u, float v) override;
 	Vector* normal(float u, float v) override;
 
 	Vector r(float u, float v)
