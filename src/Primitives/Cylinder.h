@@ -7,6 +7,7 @@ class Cylinder : public ParametricSurface
 {
 private:
 	float _paramA, _paramB, _radius, _height, _resolution;
+
 public:
 	Cylinder();
 	Cylinder(float paramA, float paramB, float radius, float height, float resolution);

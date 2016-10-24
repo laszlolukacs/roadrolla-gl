@@ -34,7 +34,6 @@ void Cube::tesselate()
 				{
 					x = _start.x + width;
 				}
-
 				else
 				{
 					x = _start.x;

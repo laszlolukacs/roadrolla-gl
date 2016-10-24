@@ -39,10 +39,10 @@ void ParametricSurface::tesselate()
 		int j = 0;
 		for (float v = _vMin; v < _vMax + _vStep; v += _vStep)
 		{
-			_vertexBuffer[j + (_vLength - 1) * i] = position(u, v);
+			_vertexBuffer[j + _vLength * i] = position(u, v);
 			_vertexBufferLength++;
 
-			_normalBuffer[j + (_vLength - 1) * i] = normal(u, v);
+			_normalBuffer[j + _vLength * i] = normal(u, v);
 			_normalBufferLength++;
 
 			j++;
@@ -60,7 +60,7 @@ void ParametricSurface::render()
 	for (float u = _uMin; u < _uMax; u += _uStep)
 	{
 		int j = 0;
-		for (float v = _vMin; v < _vMax; v += _vStep)
+		for (float v = _vMin; v < _vMax ; v += _vStep)
 		{
 			// draws the first triangle of the 'quad', { v0, v1, v2 }
 			renderVertexPositionNormalTexture(u, v, i, j);
@@ -83,8 +83,8 @@ void ParametricSurface::render()
 
 void ParametricSurface::renderVertexPositionNormalTexture(float u, float v, int i, int j) const
 {
-	Vector* vertex = _vertexBuffer[j + (_vLength - 2) * i];
-	Vector* normal = _normalBuffer[j + (_vLength - 2) * i];
+	Vector* vertex = _vertexBuffer[j + _vLength * i];
+	Vector* normal = _normalBuffer[j + _vLength * i];
 
 	glTexCoord2f(u, v);
 	glNormal3f(normal->x, normal->y, normal->z);

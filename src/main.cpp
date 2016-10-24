@@ -5,6 +5,9 @@
 #include <GL/freeglut.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+#  ifndef WIN32_LEAN_AND_MEAN
+#    define WIN32_LEAN_AND_MEAN 1
+#  endif
 #include <windows.h>
 #endif // to make it work on Microsoft Windows, too
 
@@ -23,6 +26,8 @@
 #include "Primitives/Circle.h"
 #include "Primitives/Ellipsoid.h"
 #include "Primitives/Cylinder.h"
+#include "Primitives/Cone.h"
+#include "Primitives/Plane.h"
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
@@ -31,134 +36,7 @@ float g_Time = 0.0f;
 float g_TimeElapsed = 0.0f;
 float g_DeltaT = 0.1f;
 
-class LegacyPrimitive
-{
-protected:
-	bool isTextured;
-	Material _material;
-public:
-	virtual void TesselateAndRender_gl() = 0;
-};
-
-class LegacyParametricSurface : LegacyPrimitive
-{
-protected:
-	float _uMinValue, _uMaxValue, _uStep;
-	float _vMinValue, _vMaxValue, _vStep;
-	bool _hasShadow;
-public:
-	float lightX, lightY;
-	LegacyParametricSurface() {}
-	LegacyParametricSurface(float uMin_in, float uMax_in, float uStep_in, float vMin_in, float vMax_in, float vStep_in, bool hasShadow_in) : _uMinValue(uMin_in), _uMaxValue(uMax_in), _uStep(uStep_in), _vMinValue(vMin_in), _vMaxValue(vMax_in), _vStep(vStep_in), _hasShadow(hasShadow_in) {	}
-
-	virtual Vector r(float u, float v) = 0;
-	virtual Vector n(float u, float v) = 0;
-
-	virtual void TesselateAndRender_gl()
-	{
-		Vector rVec, nVec, rVecShadow;
-
-		glEnable(GL_NORMALIZE);
-		glBegin(GL_QUADS);
-		for (float u = _uMinValue; u < _uMaxValue; u += _uStep)
-		{
-			for (float v = _vMinValue; v < _vMaxValue; v += _vStep)
-			{
-				rVec = r(u, v);
-				nVec = n(u, v);
-				glTexCoord2f(u, v);
-				glNormal3f(nVec.x, nVec.y, nVec.z);
-				glVertex3f(rVec.x, rVec.y, rVec.z);
-
-				rVec = r(u + _uStep, v);
-				nVec = n(u + _uStep, v);
-				glTexCoord2f(u + _uStep, v);
-				glNormal3f(nVec.x, nVec.y, nVec.z);
-				glVertex3f(rVec.x, rVec.y, rVec.z);
-
-				rVec = r(u + _uStep, v + _vStep);
-				nVec = n(u + _uStep, v + _vStep);
-				glTexCoord2f(u + _uStep, v + _vStep);
-				glNormal3f(nVec.x, nVec.y, nVec.z);
-				glVertex3f(rVec.x, rVec.y, rVec.z);
-
-				rVec = r(u, v + _vStep);
-				nVec = n(u, v + _vStep);
-				glTexCoord2f(u, v + _vStep);
-				glNormal3f(nVec.x, nVec.y, nVec.z);
-				glVertex3f(rVec.x, rVec.y, rVec.z);
-			}
-		}
-		glEnd();
-	}
-};
-
-
-
-class Cone : public LegacyParametricSurface
-{
-private:
-	float _paramA, _paramB, _radius, _height, _resolution;
-public:
-	Cone() {}
-	Cone(float paramA_in, float paramB_in, float radius_in, float height_in, float resolution_in) : LegacyParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -(height_in / 2.0f), (height_in / 2.0f), height_in / resolution_in, true), _paramA(paramA_in), _paramB(paramB_in), _radius(radius_in), _height(height_in), _resolution(resolution_in) {}
-
-	Vector r(float u, float v)
-	{
-		Vector result;
-		float coneDivider = 1.0f - ((v + (_height / 2.0f)) / _height);
-
-		if (coneDivider > 0.0f)
-		{
-			result.x = _paramA + _radius * coneDivider * cosf(u);
-			result.y = _resolution * v;
-			result.z = _paramB + _radius * coneDivider * sinf(u);
-		}
-
-		return result;
-	}
-
-	Vector n(float u, float v)
-	{
-		float coneDivider = 1.0f - ((v + (_height / 2.0f)) / _height);
-
-		if (coneDivider != 0.0f)
-		{
-			Vector rDerivedU(_radius * coneDivider * -(sinf(u)), 0.0f, _radius * coneDivider * cosf(u));
-			Vector rDerivedV(0.0f, _resolution, 0.0f);
-			return rDerivedU % rDerivedV;
-		}
-		else
-			return Vector(0.0f, 0.0f, 0.0f);
-	}
-};
-
-class Plane : public LegacyParametricSurface
-{
-private:
-	float _height, _resolution;
-public:
-	Plane() {}
-	Plane(float width_in, float depth_in, float height_in, float resolution_in) : LegacyParametricSurface(-(width_in / 2.0f), width_in / 2.0f, width_in / resolution_in, -(depth_in / 2.0f), depth_in / 2.0f, depth_in / resolution_in, false), _height(height_in), _resolution(resolution_in) {}
-
-	Vector r(float u, float v)
-	{
-		Vector result;
-		result.x = _resolution * u;
-		result.y = _height;
-		result.z = _resolution * v;
-		return result;
-	}
-
-	Vector n(float u, float v)
-	{
-		Vector rDerivedU(_resolution, 0.0f, 0.0f);
-		Vector rDerivedV(0.0f, 0.0f, _resolution);
-		return rDerivedU % rDerivedV;
-	}
-};
-
-class ObjectBase : public LegacyPrimitive
+class ObjectBase
 {
 protected:
 	bool _isShadowMode;
@@ -166,6 +44,7 @@ protected:
 	Vector _acceleration;
 	Vector _velocity;
 	Vector _position;
+	Material _material;
 
 public:
 	ObjectBase() {}
@@ -204,6 +83,11 @@ public:
 		{
 			delete _wheelSide;
 		}
+
+		if (_wheel != nullptr)
+		{
+			delete _wheel;
+		}
 	}
 
 	void Build()
@@ -232,9 +116,6 @@ public:
 		wheelSide->tesselate();
 		wheel->tesselate();
 		exhaust->tesselate();
-
-		wheelSide->lightX = wheel->lightX = exhaust->lightX = -4.0f;
-		wheelSide->lightY = wheel->lightY = exhaust->lightY = 8.0f;
 
 		_wheelSide = wheelSide;
 		_wheel = wheel;
@@ -355,7 +236,7 @@ private:
 
 	Ellipsoid *_body, *_head, *_eye, *_knee;
 	Cylinder *_neck, *_upperLeg;
-	Cone _beak, _mohawk;
+	Cone *_beak, *_mohawk;
 
 	Material _eyeMaterial;
 	Material _bodyMaterial;
@@ -374,8 +255,8 @@ public:
 		Ellipsoid* knee = new Ellipsoid(0.04f, 0.04f, 0.04f);
 		Cylinder* neck = new Cylinder(0.0f, 0.0f, 0.08f, 0.6f, 1.0f);
 		Cylinder* upperLeg = new Cylinder(0.0f, 0.0f, 0.03f, 0.5f, 1.0f);
-		Cone beak(0.0f, 0.0f, 0.04f, 0.2f, 1.0f);
-		Cone mohawk(0.0f, 0.0f, 0.03f, 0.23f, 1.0f);
+		Cone* beak = new Cone(0.0f, 0.0f, 0.04f, 0.2f, 1.0f);
+		Cone* mohawk = new Cone(0.0f, 0.0f, 0.03f, 0.23f, 1.0f);
 
 		_isAlive = true;
 		_acceleration = _velocity = _position = nullVec;
@@ -388,6 +269,9 @@ public:
 
 		neck->tesselate();
 		upperLeg->tesselate();
+
+		beak->tesselate();
+		mohawk->tesselate();
 
 		_body = body;
 		_head = head;
@@ -483,7 +367,7 @@ public:
 			_limbMaterial.setup_gl();
 		glTranslatef(0.25f, -0.028f, 0.0f);
 		glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-		_beak.TesselateAndRender_gl();
+		_beak->render();
 		glPopMatrix();
 		glPushMatrix();
 		if (!_isShadowMode)
@@ -491,18 +375,18 @@ public:
 		glTranslatef(0.12f, 0.185f, 0.0f);
 		glPushMatrix();
 		glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
-		_mohawk.TesselateAndRender_gl();
+		_mohawk->render();
 		glPopMatrix();
 		glTranslatef(-0.06f, 0.0, 0.0f);
-		_mohawk.TesselateAndRender_gl();
+		_mohawk->render();
 		glTranslatef(-0.06f, 0.0, 0.0f);
-		_mohawk.TesselateAndRender_gl();
+		_mohawk->render();
 		glTranslatef(-0.06f, 0.0, 0.0f);
-		_mohawk.TesselateAndRender_gl();
+		_mohawk->render();
 		glTranslatef(-0.06f, 0.0, 0.0f);
 		glPushMatrix();
 		glRotatef(20.0f, 0.0f, 0.0f, 1.0f);
-		_mohawk.TesselateAndRender_gl();
+		_mohawk->render();
 		glPopMatrix();
 		glPopMatrix();
 		glPopMatrix();
@@ -564,8 +448,8 @@ private:
 	Material _grassMaterial;
 	Material _roadMaterial;
 
-	Plane _grassy;
-	Plane _road;
+	Plane* _grassy;
+	Plane* _road;
 
 public:
 	Camera _cam;
@@ -636,8 +520,10 @@ public:
 		_cam.setupModelView_gl();
 		_sun.setup_gl();
 
-		Plane grass(100.0f, 100.0f, -0.002f, 1.0f);
-		Plane road(100.0f, 2.0f, -0.001f, 4.0f);
+		Plane* grass = new Plane(100.0f, 100.0f, -0.002f, 1.0f);
+		Plane* road = new Plane(100.0f, 2.0f, -0.001f, 4.0f);
+		grass->tesselate();
+		road->tesselate();
 		_grassy = grass;
 		_road = road;
 
@@ -789,14 +675,14 @@ public:
 
 		glPushMatrix();
 		glTranslatef(0.0f, -0.002f, 0.0f);
-		_grassy.TesselateAndRender_gl();
+		_grassy->render();
 		glPopMatrix();
 
 		_roadMaterial.setup_gl();
 		_roadTexture.setup_gl();
 		glPushMatrix();
 		glTranslatef(0.0f, -0.001f, 0.00f);
-		_road.TesselateAndRender_gl();
+		_road->render();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
 
@@ -944,6 +830,9 @@ void onKeyboard(unsigned char key, int x, int y)
 		break;
 	case 'b':
 		g_Scene.DeccelerateRoller();
+		break;
+	case '\x1b': // that's the 'Esc' key
+		glutLeaveMainLoop();
 		break;
 	}
 }

@@ -7,9 +7,13 @@ struct Vector
 {
 	float x, y, z;
 
-	Vector() : x(0.0f), y(0.0f), z(0.0f) {}
+	Vector() : x(0.0f), y(0.0f), z(0.0f)
+	{
+	}
 
-	Vector(float x_in, float y_in, float z_in) : x(x_in), y(y_in), z(z_in) {}
+	Vector(float x_in, float y_in, float z_in) : x(x_in), y(y_in), z(z_in)
+	{
+	}
 
 	Vector& operator=(const Vector &rightHandSide)
 	{
