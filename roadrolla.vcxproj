@@ -142,9 +142,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Actors\Chicken.cpp" />
+    <ClCompile Include="src\Actors\RoadRoller.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Primitive.cpp" />
     <ClCompile Include="src\Primitives\Circle.cpp" />
@@ -156,6 +160,9 @@
     <ClCompile Include="src\Primitives\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Actor.h" />
+    <ClInclude Include="src\Actors\Chicken.h" />
+    <ClInclude Include="src\Actors\RoadRoller.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\LightSource.h" />
