@@ -90,7 +90,7 @@ public:
 		}
 	}
 
-	void Build()
+	void build()
 	{
 		Vector nullVec = Vector(0.0f, 0.0f, 0.0f);
 
@@ -141,7 +141,7 @@ public:
 		_texture.generate();
 	}
 
-	void Update(float deltaT)
+	void update(float deltaT)
 	{
 		_velocity += _acceleration * deltaT;
 		_position += _velocity * deltaT;
@@ -150,12 +150,12 @@ public:
 		_rotateFi -= _rotateVelocity * deltaT * 0.3183f * 180.0f;
 	}
 
-	void SetTransformations_gl()
+	void setTransformations()
 	{
 		glTranslatef(_position.x, 1.0f + _position.y, _position.z);
 	}
 
-	void TesselateAndRender_gl()
+	void render()
 	{
 		if (!_isShadowMode)
 			_wheelMaterial.setup_gl();
@@ -245,7 +245,7 @@ private:
 public:
 	Chicken() {}
 
-	void Build()
+	void build()
 	{
 		Vector nullVec = Vector();
 
@@ -311,12 +311,12 @@ public:
 		return _isMoving;
 	}
 
-	void SetPosition(Vector position)
+	void setPosition(Vector position)
 	{
 		_position = position;
 	}
 
-	void SetTransformations_gl()
+	void setTransformations()
 	{
 		glTranslatef(_position.x, _position.y, _position.z);
 		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
@@ -326,7 +326,7 @@ public:
 
 	void SetStillAlive(bool isStillAlive) { _isAlive = isStillAlive; }
 
-	void Update(float deltaT)
+	void update(float deltaT)
 	{
 		if (_isAlive)
 			_position += _velocity * deltaT;
@@ -334,7 +334,7 @@ public:
 			_velocity.z = 0.0f;
 	}
 
-	void TesselateAndRender_gl()
+	void render()
 	{
 		if (!_isShadowMode)
 			_bodyMaterial.setup_gl();
@@ -544,10 +544,10 @@ public:
 
 		for (int i = 0; i < 3; i++)
 		{
-			_chicken[i].Build();
+			_chicken[i].build();
 			tempPosition.x = 2.0f + 2.0f * (float)i;
 			tempPosition.z = 3.0f;
-			_chicken[i].SetPosition(tempPosition);
+			_chicken[i].setPosition(tempPosition);
 		}
 		_chickenView.eyePos = tempPosition;
 		_chickenView.eyePos.y = tempPosition.y + 0.8f;
@@ -562,7 +562,7 @@ public:
 		_chickenView.nearClippingPane = 0.3f;
 		_chickenView.rearClippingPane = 20.0f;
 
-		_roadRoller.Build();
+		_roadRoller.build();
 		tempPosition.x = -4.0f;
 		tempPosition.z = 0.0f;
 		_roadRoller.SetPosition(tempPosition);
@@ -639,12 +639,12 @@ public:
 		_cam.eyePos.x = 5.0f * cosf(time * 0.5f);
 		_cam.eyePos.z = 5.0f * sinf(time * 0.5f);
 
-		_roadRoller.Update(deltaT);
+		_roadRoller.update(deltaT);
 		_inCar.eyePos.x = _roadRoller.GetPosition().x;
 		_inCar.lookAt.x = 6.0f + _roadRoller.GetPosition().x;
 		for (int i = 0; i < 3; i++)
 		{
-			_chicken[i].Update(deltaT);
+			_chicken[i].update(deltaT);
 			if (_chicken[i].IsAlive())
 			{
 				_chickenView.eyePos = _chicken[i].GetPosition();
@@ -695,8 +695,8 @@ public:
 				{
 					glPushMatrix();
 					_chicken[i].SetShadowMode(false);
-					_chicken[i].SetTransformations_gl();
-					_chicken[i].TesselateAndRender_gl();
+					_chicken[i].setTransformations();
+					_chicken[i].render();
 					glPopMatrix();
 				}
 			}
@@ -705,8 +705,8 @@ public:
 		glPushMatrix();
 		glEnable(GL_TEXTURE_2D);
 		_roadRoller.SetShadowMode(false);
-		_roadRoller.SetTransformations_gl();
-		_roadRoller.TesselateAndRender_gl();
+		_roadRoller.setTransformations();
+		_roadRoller.render();
 		glDisable(GL_TEXTURE_2D);
 		glPopMatrix();
 		glPopMatrix();
@@ -725,8 +725,8 @@ public:
 				{
 					glPushMatrix();
 					_chicken[j].SetShadowMode(true);
-					_chicken[j].SetTransformations_gl();
-					_chicken[j].TesselateAndRender_gl();
+					_chicken[j].setTransformations();
+					_chicken[j].render();
 					_chicken[j].SetShadowMode(false);
 					glPopMatrix();
 				}
@@ -750,8 +750,8 @@ public:
 				{
 					glPushMatrix();
 					_chicken[k].SetShadowMode(true);
-					_chicken[k].SetTransformations_gl();
-					_chicken[k].TesselateAndRender_gl();
+					_chicken[k].setTransformations();
+					_chicken[k].render();
 					_chicken[k].SetShadowMode(false);
 					glPopMatrix();
 				}
@@ -761,8 +761,8 @@ public:
 		glPushMatrix();
 		glEnable(GL_TEXTURE_2D);
 		_roadRoller.SetShadowMode(true);
-		_roadRoller.SetTransformations_gl();
-		_roadRoller.TesselateAndRender_gl();
+		_roadRoller.setTransformations();
+		_roadRoller.render();
 		_roadRoller.SetShadowMode(false);
 		glDisable(GL_TEXTURE_2D);
 		glPopMatrix();
