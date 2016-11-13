@@ -1,5 +1,9 @@
 #include "Chicken.h"
 
+Chicken::Chicken()
+{
+}
+
 void Chicken::build()
 {
 	Vector nullVec = Vector();
@@ -171,3 +175,6 @@ void Chicken::update(float deltaT)
 	}
 }
 
+Chicken::~Chicken()
+{
+}

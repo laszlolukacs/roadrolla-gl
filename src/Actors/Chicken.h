@@ -21,18 +21,16 @@ private:
 	Material _limbMaterial;
 
 public:
-	Chicken()
-	{
-	}
+	Chicken();
 
 	void build() override;
 
-	bool IsAlive()
+	bool isAlive()
 	{
 		return _isAlive;
 	}
 
-	bool IsMoving()
+	bool isMoving()
 	{
 		return _isMoving;
 	}
@@ -44,17 +42,15 @@ public:
 
 	void setTransformations() override;
 
-	void SetIsMoving(bool isMoving) { _isMoving = isMoving; }
+	void setIsMoving(bool isMoving) { _isMoving = isMoving; }
 
-	void SetStillAlive(bool isStillAlive) { _isAlive = isStillAlive; }
+	void setStillAlive(bool isStillAlive) { _isAlive = isStillAlive; }
 
 	void update(float deltaT) override;
 
 	void render() override;
 
-	~Chicken()
-	{
-	}
+	~Chicken();
 };
 
 #endif // CHICKEN_H

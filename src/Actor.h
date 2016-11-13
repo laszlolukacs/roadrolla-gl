@@ -31,5 +31,5 @@ public:
 	virtual ~Actor() {}
 };
 
-#endif
+#endif // ACTOR_H
 

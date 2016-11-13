@@ -3,12 +3,11 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <GL/freeglut.h>
 #include "../Texture.h"
 
 struct WheelTexture : public Texture
 {
-	void generateTextureArray()
+	void generateTextureArray() override
 	{
 		srand(glutGet(GLUT_ELAPSED_TIME));
 		for (unsigned char i = 0; i < TEXTURE_SIZE; i++)

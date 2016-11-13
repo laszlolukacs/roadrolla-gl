@@ -1,10 +1,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <GL/freeglut.h>
-
 #define TEXTURE_SIZE 32
-unsigned int g_CurrentTextureNumber = 1;
+static unsigned int g_CurrentTextureNumber = 1;
 
 struct Texture
 {
@@ -32,6 +30,10 @@ struct Texture
 		glBindTexture(GL_TEXTURE_2D, id);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
+
+	virtual ~Texture()
+	{
+	}
 };
 
-#endif
+#endif // TEXTURE_H

@@ -158,8 +158,8 @@ RoadRoller::~RoadRoller()
 		delete _exhaust;
 	}
 
-	if (_chassis != nullptr)
-	{
-		delete[] _chassis;
-	}
+	//if (_chassis != nullptr)
+	//{
+	//	delete _chassis;
+	//}
 }
