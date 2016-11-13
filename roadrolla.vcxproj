@@ -158,6 +158,7 @@
     <ClCompile Include="src\Primitives\Ellipsoid.cpp" />
     <ClCompile Include="src\Primitives\ParametricSurface.cpp" />
     <ClCompile Include="src\Primitives\Plane.cpp" />
+    <ClCompile Include="src\RoadRollerGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actor.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="src\Primitives\Ellipsoid.h" />
     <ClInclude Include="src\Primitives\ParametricSurface.h" />
     <ClInclude Include="src\Primitives\Plane.h" />
+    <ClInclude Include="src\RoadRollerGame.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Textures\GrassTexture.h" />
     <ClInclude Include="src\Textures\RoadTexture.h" />

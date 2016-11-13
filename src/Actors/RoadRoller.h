@@ -27,6 +27,5 @@ public:
 	~RoadRoller();
 };
 
-
 #endif // ROADROLLER_H
 

@@ -68,6 +68,9 @@
     <ClCompile Include="src\Actors\RoadRoller.cpp">
       <Filter>Source Files\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="src\RoadRollerGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vector.h">
@@ -129,6 +132,9 @@
     </ClInclude>
     <ClInclude Include="src\Actors\Chicken.h">
       <Filter>Header Files\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RoadRollerGame.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

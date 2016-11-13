@@ -23,31 +23,17 @@ private:
 public:
 	Chicken();
 
-	void build() override;
-
-	bool isAlive()
-	{
-		return _isAlive;
-	}
-
-	bool isMoving()
-	{
-		return _isMoving;
-	}
-
-	void setPosition(Vector position) override
-	{
-		_position = position;
-	}
-
-	void setTransformations() override;
-
+	bool isAlive() const { return _isAlive; }
+	bool isMoving() const { return _isMoving; }
 	void setIsMoving(bool isMoving) { _isMoving = isMoving; }
-
 	void setStillAlive(bool isStillAlive) { _isAlive = isStillAlive; }
 
-	void update(float deltaT) override;
+	void build() override;
 
+	void setPosition(Vector position) override { _position = position; }
+
+	void setTransformations() override;
+	void update(float deltaT) override;
 	void render() override;
 
 	~Chicken();
