@@ -403,7 +403,7 @@ public:
 		}
 
 		// kocka kirajzolasa
-		// forras: Szirmay-Kalos László, Antal Gyorgy, Csonka Ferenc: Haromdimenzios grafika, animacio es jatekfejlesztes
+		// forras: Szirmay-Kalos LÃ¡szlÃ³, Antal Gyorgy, Csonka Ferenc: Haromdimenzios grafika, animacio es jatekfejlesztes
 		// a CD mellekleten a "Forraskodok\Konyv\HelloOpenGL" eleresi uton talalhato HelloOpenGL.cpp kodfajl 283. soratol
 		glBegin(GL_QUADS);
 		glNormal3f(0.0, 0.0, 1.0);
@@ -535,16 +535,16 @@ public:
 	{
 		Vector result;
 		result.x = _paramA * cosf(u) * cosf(v);
-		result.y = _paramB * cosf(u) * sinf(v);
-		result.z = _paramC * sinf(u);
+		result.y = _paramB * sinf(u);
+		result.z = _paramC * cosf(u) * sinf(v);
 		return result;
 	}
 
 	Vector n(float u, float v)
 	{
 		Vector result;
-		Vector rDerivedU(_paramA * -(sinf(u)) * cosf(v), _paramB * -(sinf(u)) * sinf(v), _paramC * cosf(u));
-		Vector rDerivedV(_paramA * cosf(u) * -(sinf(v)), _paramB * cosf(u) * cos(v), 0.0f);
+		Vector rDerivedU(_paramA * -(sinf(u)) * cosf(v),  _paramB * cosf(u), _paramC * -(sinf(u)) * sinf(v));
+		Vector rDerivedV(_paramA * cosf(u) * -(sinf(v)), 0.0f, _paramC * cosf(u) * cosf(v));
 		result = rDerivedU % rDerivedV;
 		return result;
 	}
