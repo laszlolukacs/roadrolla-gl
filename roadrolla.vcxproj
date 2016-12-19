@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_clang_c2</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -142,10 +142,46 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Actors\Chicken.cpp" />
+    <ClCompile Include="src\Actors\RoadRoller.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Primitive.cpp" />
+    <ClCompile Include="src\Primitives\Circle.cpp" />
+    <ClCompile Include="src\Primitives\Cone.cpp" />
+    <ClCompile Include="src\Primitives\Cube.cpp" />
+    <ClCompile Include="src\Primitives\Cylinder.cpp" />
+    <ClCompile Include="src\Primitives\Ellipsoid.cpp" />
+    <ClCompile Include="src\Primitives\ParametricSurface.cpp" />
+    <ClCompile Include="src\Primitives\Plane.cpp" />
+    <ClCompile Include="src\RoadRollerGame.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Actor.h" />
+    <ClInclude Include="src\Actors\Chicken.h" />
+    <ClInclude Include="src\Actors\RoadRoller.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Color.h" />
+    <ClInclude Include="src\LightSource.h" />
+    <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\Primitive.h" />
+    <ClInclude Include="src\Primitives\Circle.h" />
+    <ClInclude Include="src\Primitives\Cone.h" />
+    <ClInclude Include="src\Primitives\Cube.h" />
+    <ClInclude Include="src\Primitives\Cylinder.h" />
+    <ClInclude Include="src\Primitives\Ellipsoid.h" />
+    <ClInclude Include="src\Primitives\ParametricSurface.h" />
+    <ClInclude Include="src\Primitives\Plane.h" />
+    <ClInclude Include="src\RoadRollerGame.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Textures\GrassTexture.h" />
+    <ClInclude Include="src\Textures\RoadTexture.h" />
+    <ClInclude Include="src\Textures\WheelTexture.h" />
+    <ClInclude Include="src\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
