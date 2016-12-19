@@ -10,12 +10,12 @@ Cube::Cube(float startX, float startY, float startZ, float width, float height, 
 
 void Cube::tesselate()
 {
-	if (_vertexBuffer != nullptr) {
-		delete[] _vertexBuffer;
+	if (_vertices != nullptr) {
+		delete[] _vertices;
 	}
 
-	_vertexBufferLength = 0;
-	_vertexBuffer = new Vector*[8];
+	_verticesLength = 0;
+	_vertices = new Vector*[8];
 
 	float height = -_height;
 	float width = -_width;
@@ -39,8 +39,8 @@ void Cube::tesselate()
 					x = _start.x;
 				}
 
-				_vertexBuffer[4 * i + 2 * j + k] = new Vector(x, y, z);
-				_vertexBufferLength++;
+				_vertices[4 * i + 2 * j + k] = new Vector(x, y, z);
+				_verticesLength++;
 			}
 		}
 	}
@@ -48,43 +48,43 @@ void Cube::tesselate()
 
 void Cube::render()
 {
-	if (_vertexBuffer != nullptr) {
+	if (_vertices != nullptr) {
 		glBegin(GL_QUADS);
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(_vertexBuffer[0]->x, _vertexBuffer[0]->y, _vertexBuffer[0]->z);
-		glVertex3f(_vertexBuffer[1]->x, _vertexBuffer[1]->y, _vertexBuffer[1]->z);
-		glVertex3f(_vertexBuffer[2]->x, _vertexBuffer[2]->y, _vertexBuffer[2]->z);
-		glVertex3f(_vertexBuffer[3]->x, _vertexBuffer[3]->y, _vertexBuffer[3]->z);
+		glVertex3f(_vertices[0]->x, _vertices[0]->y, _vertices[0]->z);
+		glVertex3f(_vertices[1]->x, _vertices[1]->y, _vertices[1]->z);
+		glVertex3f(_vertices[2]->x, _vertices[2]->y, _vertices[2]->z);
+		glVertex3f(_vertices[3]->x, _vertices[3]->y, _vertices[3]->z);
 
 		glNormal3f(0.0f, 0.0f, -1.0f);
-		glVertex3f(_vertexBuffer[6]->x, _vertexBuffer[6]->y, _vertexBuffer[6]->z);
-		glVertex3f(_vertexBuffer[5]->x, _vertexBuffer[5]->y, _vertexBuffer[5]->z);
-		glVertex3f(_vertexBuffer[4]->x, _vertexBuffer[4]->y, _vertexBuffer[4]->z);
-		glVertex3f(_vertexBuffer[7]->x, _vertexBuffer[7]->y, _vertexBuffer[7]->z);
+		glVertex3f(_vertices[6]->x, _vertices[6]->y, _vertices[6]->z);
+		glVertex3f(_vertices[5]->x, _vertices[5]->y, _vertices[5]->z);
+		glVertex3f(_vertices[4]->x, _vertices[4]->y, _vertices[4]->z);
+		glVertex3f(_vertices[7]->x, _vertices[7]->y, _vertices[7]->z);
 
 		glNormal3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(_vertexBuffer[0]->x, _vertexBuffer[0]->y, _vertexBuffer[0]->z);
-		glVertex3f(_vertexBuffer[4]->x, _vertexBuffer[4]->y, _vertexBuffer[4]->z);
-		glVertex3f(_vertexBuffer[5]->x, _vertexBuffer[5]->y, _vertexBuffer[5]->z);
-		glVertex3f(_vertexBuffer[1]->x, _vertexBuffer[1]->y, _vertexBuffer[1]->z);
+		glVertex3f(_vertices[0]->x, _vertices[0]->y, _vertices[0]->z);
+		glVertex3f(_vertices[4]->x, _vertices[4]->y, _vertices[4]->z);
+		glVertex3f(_vertices[5]->x, _vertices[5]->y, _vertices[5]->z);
+		glVertex3f(_vertices[1]->x, _vertices[1]->y, _vertices[1]->z);
 
 		glNormal3f(0.0f, -1.0f, 0.0f);
-		glVertex3f(_vertexBuffer[6]->x, _vertexBuffer[6]->y, _vertexBuffer[6]->z);
-		glVertex3f(_vertexBuffer[7]->x, _vertexBuffer[7]->y, _vertexBuffer[7]->z);
-		glVertex3f(_vertexBuffer[3]->x, _vertexBuffer[3]->y, _vertexBuffer[3]->z);
-		glVertex3f(_vertexBuffer[2]->x, _vertexBuffer[2]->y, _vertexBuffer[2]->z);
+		glVertex3f(_vertices[6]->x, _vertices[6]->y, _vertices[6]->z);
+		glVertex3f(_vertices[7]->x, _vertices[7]->y, _vertices[7]->z);
+		glVertex3f(_vertices[3]->x, _vertices[3]->y, _vertices[3]->z);
+		glVertex3f(_vertices[2]->x, _vertices[2]->y, _vertices[2]->z);
 
 		glNormal3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(_vertexBuffer[0]->x, _vertexBuffer[0]->y, _vertexBuffer[0]->z);
-		glVertex3f(_vertexBuffer[3]->x, _vertexBuffer[3]->y, _vertexBuffer[3]->z);
-		glVertex3f(_vertexBuffer[7]->x, _vertexBuffer[7]->y, _vertexBuffer[7]->z);
-		glVertex3f(_vertexBuffer[4]->x, _vertexBuffer[4]->y, _vertexBuffer[4]->z);
+		glVertex3f(_vertices[0]->x, _vertices[0]->y, _vertices[0]->z);
+		glVertex3f(_vertices[3]->x, _vertices[3]->y, _vertices[3]->z);
+		glVertex3f(_vertices[7]->x, _vertices[7]->y, _vertices[7]->z);
+		glVertex3f(_vertices[4]->x, _vertices[4]->y, _vertices[4]->z);
 
 		glNormal3f(-1.0f, 0.0f, 0.0f);
-		glVertex3f(_vertexBuffer[6]->x, _vertexBuffer[6]->y, _vertexBuffer[6]->z);
-		glVertex3f(_vertexBuffer[2]->x, _vertexBuffer[2]->y, _vertexBuffer[2]->z);
-		glVertex3f(_vertexBuffer[1]->x, _vertexBuffer[1]->y, _vertexBuffer[1]->z);
-		glVertex3f(_vertexBuffer[5]->x, _vertexBuffer[5]->y, _vertexBuffer[5]->z);
+		glVertex3f(_vertices[6]->x, _vertices[6]->y, _vertices[6]->z);
+		glVertex3f(_vertices[2]->x, _vertices[2]->y, _vertices[2]->z);
+		glVertex3f(_vertices[1]->x, _vertices[1]->y, _vertices[1]->z);
+		glVertex3f(_vertices[5]->x, _vertices[5]->y, _vertices[5]->z);
 		glEnd();
 	}
 }

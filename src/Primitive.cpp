@@ -2,15 +2,15 @@
 
 Primitive::Primitive()
 {
-	this->_vertexBuffer = nullptr;
-	this->_vertexBufferLength = 0;
+	this->_vertices = nullptr;
+	this->_verticesLength = 0;
 }
 
 Primitive::~Primitive()
 {
-	if (_vertexBuffer != nullptr) {
-		delete[] this->_vertexBuffer;
-		this->_vertexBuffer = nullptr;
-		this->_vertexBufferLength = 0;
+	if (_vertices != nullptr) {
+		delete[] this->_vertices;
+		this->_vertices = nullptr;
+		this->_verticesLength = 0;
 	}
 }

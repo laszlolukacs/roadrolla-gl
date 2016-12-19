@@ -5,13 +5,11 @@
 #include <GL/freeglut.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-#  ifndef WIN32_LEAN_AND_MEAN
-#    define WIN32_LEAN_AND_MEAN 1
-#  endif
 #include <windows.h>
-#endif // to make it work on Microsoft Windows, too
+#endif // to make it work on Windows, too
 
 #include <iostream>
+
 #include "Camera.h"
 #include "RoadRollerGame.h"
 
@@ -116,10 +114,19 @@ void onIdle()
 
 void onExit()
 {
+#if defined(_DEBUG) && (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+	_CrtDumpMemoryLeaks();
+#endif
+
 	std::cout << "Bye.";
 }
 
-// entry point
+/**
+ * The entry point for the application.
+ * @param argc the number of arguments passed to the application
+ * @param argv array of strings containing the arguments that was passed to the application
+ * @return 0 after normal exectuion.
+ */
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitWindowSize(600, 600);

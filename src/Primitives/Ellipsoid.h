@@ -11,6 +11,7 @@ private:
 public:
 	Ellipsoid();
 	Ellipsoid(float paramA, float paramB, float paramC);
+	Ellipsoid(float paramA, float paramB, float paramC, float uMin, float uMax, float uStep, float vMin, float vMax, float vStep);
 
 	Vector* position(float u, float v) override;
 	Vector* normal(float u, float v) override;

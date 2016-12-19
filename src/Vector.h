@@ -3,14 +3,27 @@
 
 #include <math.h>
 
+/**
+* Structure for 3 dimensional vectors and a subset of their respective operations.
+*/
 struct Vector
 {
 	float x, y, z;
 
+	/**
+	* Initializes a new instance of the Vector struct.
+	*/
 	Vector() : x(0.0f), y(0.0f), z(0.0f)
 	{
 	}
 
+	/**
+	* Initializes a new instance of the Vector struct.
+	*
+	* @param x_in x coordinate
+	* @param y_in y coordinate
+	* @param z_in z coordinate
+	*/
 	Vector(float x_in, float y_in, float z_in) : x(x_in), y(y_in), z(z_in)
 	{
 	}
@@ -79,6 +92,9 @@ struct Vector
 		return result;
 	}
 
+	/**
+	 * Overrides the '*' operator to calculate the dot/scalar product (·) of two vectors.
+	 */
 	float operator*(const Vector &rightHandSide) const
 	{
 		return (this->x * rightHandSide.x
@@ -86,6 +102,9 @@ struct Vector
 			+ this->z * rightHandSide.z);
 	}
 
+	/**
+	 * Overrides the '%' operator to calculate the cross/vector product (×) of two vectors.
+	 */
 	Vector operator%(const Vector &rightHandSide) const
 	{
 		Vector result = *this;
@@ -104,6 +123,11 @@ struct Vector
 		return result;
 	}
 
+	/**
+	* Gets the length of the vector.
+	*
+	* @returns The length of the vector.
+	*/
 	float length() const
 	{
 		return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
