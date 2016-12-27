@@ -20,7 +20,7 @@ float g_Time = 0.0f;
 float g_TimeElapsed = 0.0f;
 float g_DeltaT = 0.1f;
 
-RoadRollerGame g_Scene;
+RoadRollerGame game;
 
 void onInitialization()
 {
@@ -29,7 +29,7 @@ void onInitialization()
 	glEnable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
 
-	g_Scene.build();
+	game.build();
 
 	glutPostRedisplay();
 }
@@ -39,25 +39,25 @@ void onDisplay()
 	glClearColor(0.0f, 0.604f, 0.804f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	g_Scene._cam.setupProjection_gl();
-	g_Scene._cam.setupModelView_gl();
+	game._cam.setupProjection_gl();
+	game._cam.setupModelView_gl();
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glPushMatrix();
-	g_Scene.render();
+	game.render();
 	glPopMatrix();
 
-	g_Scene._inCar.setupProjection_gl();
-	g_Scene._inCar.setupModelView_gl();
+	game._inCar.setupProjection_gl();
+	game._inCar.setupModelView_gl();
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glPushMatrix();
-	g_Scene.render();
+	game.render();
 	glPopMatrix();
 
-	g_Scene._chickenView.setupProjection_gl();
-	g_Scene._chickenView.setupModelView_gl();
+	game._chickenView.setupProjection_gl();
+	game._chickenView.setupModelView_gl();
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glPushMatrix();
-	g_Scene.render();
+	game.render();
 	glPopMatrix();
 
 	glutSwapBuffers();
@@ -68,16 +68,16 @@ void onKeyboard(unsigned char key, int x, int y)
 	switch (key)
 	{
 	case 'c':
-		g_Scene.startNextChicken();
+		game.startNextChicken();
 		break;
 	case 'f':
-		g_Scene.accelerateRoller();
+		game.accelerateRoller();
 		break;
 	case 'n':
-		g_Scene.setStillRoller();
+		game.setStillRoller();
 		break;
 	case 'b':
-		g_Scene.deccelerateRoller();
+		game.deccelerateRoller();
 		break;
 	case '\x1b': // that's the 'Esc' key
 		glutLeaveMainLoop();
@@ -105,7 +105,7 @@ void g_SimulateWorld(float timeStart, float timeEnd)
 	for (float tCurrent = timeStart; tCurrent < timeEnd; tCurrent += g_DeltaT)
 	{
 		float deltaT = ((g_DeltaT < (timeEnd - tCurrent)) ? (g_DeltaT) : (timeEnd - tCurrent));
-		g_Scene.update(deltaT, tCurrent - g_TimeElapsed);
+		game.update(deltaT, tCurrent - g_TimeElapsed);
 	}
 }
 

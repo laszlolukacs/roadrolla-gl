@@ -315,3 +315,7 @@ void RoadRollerGame::render()
 	glShadeModel(GL_SMOOTH);
 	glPopMatrix();
 }
+
+RoadRollerGame::~RoadRollerGame()
+{
+}
