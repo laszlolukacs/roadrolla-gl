@@ -1,6 +1,7 @@
 #ifndef ROADROLLER_GAME_H
 #define ROADROLLER_GAME_H
 
+#include <GL/freeglut.h>
 #include "Vector.h"
 #include "Camera.h"
 #include "LightSource.h"
@@ -49,6 +50,8 @@ public:
 
 	void update(float deltaT, float periodTime);
 	void render();
+
+	~RoadRollerGame();
 };
 
 #endif // ROADROLLER_GAME_H
