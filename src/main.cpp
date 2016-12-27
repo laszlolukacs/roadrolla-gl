@@ -90,6 +90,11 @@ void onMouse(int button, int state, int x, int y)
 {
 }
 
+void onReshape(int newWidth, int newHeight)
+{
+
+}
+
 void g_SimulateWorld(float timeStart, float timeEnd)
 {
 	if (timeStart - g_TimeElapsed >= 10000.0f)
@@ -149,6 +154,7 @@ int main(int argc, char **argv) {
 	glutMouseFunc(onMouse);
 	glutIdleFunc(onIdle);
 	glutKeyboardFunc(onKeyboard);
+	glutReshapeFunc(onReshape);
 
 	glutMainLoop();
 

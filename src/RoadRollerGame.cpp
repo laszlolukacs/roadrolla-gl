@@ -1,3 +1,4 @@
+#include <GL/GL.h>
 #include "RoadRollerGame.h"
 
 RoadRollerGame::RoadRollerGame()
