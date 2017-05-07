@@ -3,12 +3,17 @@
 
 #include <math.h>
 
-/**
-* Structure for 3 dimensional vectors and a subset of their respective operations.
-*/
+/* Structure for 3 dimensional vectors and a subset of their respective operations. */
 struct Vector
 {
-	float x, y, z;
+	/* X coordinate of the vector. */
+	float x;
+
+	/* Y coordinate of the vector. */
+	float y;
+
+	/* Z coordinate of the vector. */
+	float z;
 
 	/**
 	* Initializes a new instance of the Vector struct.
@@ -131,6 +136,24 @@ struct Vector
 	float length() const
 	{
 		return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
+	}
+
+	/**
+	* Gets the normalized form of the vector.
+	*
+	* @returns The normalized form of the vector.
+	*/
+	Vector normalize() const
+	{
+		Vector normalized;
+		float length = this->length();
+		if (length != 0) {
+			normalized.x = this->x / length;
+			normalized.y = this->y / length;
+			normalized.z = this->z / length;
+		}
+
+		return normalized;
 	}
 };
 
