@@ -64,12 +64,18 @@ void ParametricSurface::render()
 		int j = 0;
 		for (float v = _vMin; v < _vMax; v += _vStep)
 		{
+			// vertices of a 'quad':
+			// v0 = i, j
+			// v1 = i+1, j
+			// v2 = i+1, j+1
+			// v3 = i, j+1
+
 			// draws the first triangle of the 'quad', { v0, v1, v2 }
 			renderVertexPositionNormalTexture(u, v, i, j);
 			renderVertexPositionNormalTexture(u + _uStep, v, i + 1, j);
 			renderVertexPositionNormalTexture(u + _uStep, v + _vStep, i + 1, j + 1);
 
-			// draws the second triangle of the 'quad', { v0, v2, v3}
+			//// draws the second triangle of the 'quad', { v0, v2, v3}
 			renderVertexPositionNormalTexture(u, v, i, j);
 			renderVertexPositionNormalTexture(u + _uStep, v + _vStep, i + 1, j + 1);
 			renderVertexPositionNormalTexture(u, v + _vStep, i, j + 1);

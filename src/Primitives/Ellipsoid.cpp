@@ -18,15 +18,15 @@ Vector* Ellipsoid::position(float u, float v)
 {
 	Vector* result = new Vector;
 	result->x = _paramA * cosf(u) * cosf(v);
-	result->y = _paramB * sinf(u);
-	result->z = _paramC * cosf(u) * sinf(v);
+	result->y = _paramC * sinf(u);
+	result->z = _paramB * cosf(u) * sinf(v);
 	return result;
 }
 
 Vector* Ellipsoid::normal(float u, float v)
 {
-	Vector rDerivedU(_paramA * -sinf(u) * cosf(v), _paramB * cos(u), _paramC * -sinf(u) * sinf(v));
-	Vector rDerivedV(_paramA * cosf(u) * -sinf(v), 0.0f, _paramC * cosf(u) * cosf(v));
+	Vector rDerivedU(_paramA * -sinf(u) * cosf(v), _paramC * cos(u), _paramB * -sinf(u) * sinf(v));
+	Vector rDerivedV(_paramA * cosf(u) * -sinf(v), 0.0f, _paramB * cosf(u) * cosf(v));
 
 	Vector* result = new Vector(rDerivedU % rDerivedV);
 	return result;

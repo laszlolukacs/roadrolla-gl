@@ -20,7 +20,10 @@ protected:
 	/* The normal vectors of the parametric surface, stored in the system memory */
 	Vector** _normals;
 
+	/* The details of the 'u' axis of the parametric surface. */
 	float _uMin, _uMax, _uStep;
+
+	/* The details of the 'v' axis of the parametric surface. */
 	float _vMin, _vMax, _vStep;
 
 	/* The number of individual 'v' values used by this instance of ParametricSurface */
@@ -39,6 +42,15 @@ protected:
 	* @returns The total amount of vertices required by this instance of the ParametricSurface class.
 	*/
 	int getNumberOfVertices(float uMin, float uMax, float uStep, float vMin, float vMax, float vStep);
+
+	/**
+	 * Performs the specifying the textures, normals and vertices of the parametric surface within the gfxApiBeginDraw / gfxApiEndDraw function pairs.
+	 *
+	 * @param u The 'u' coordinate of the parametric surface, used for texturing.
+	 * @param v The 'v' coordinate of the parametric surface, used for texturing.
+	 * @param i The 'i' lookup index of the vertice and normals map to be used.
+	 * @param j The 'j' lookup index of the vertice and normals map to be used.
+	 */
 	void renderVertexPositionNormalTexture(float u, float v, int i, int j) const;
 
 public:

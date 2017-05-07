@@ -4,23 +4,25 @@ Cylinder::Cylinder()
 {
 }
 
-Cylinder::Cylinder(float paramA, float paramB, float radius, float height, float resolution) : ParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, 0, height, height / resolution), _paramA(paramA), _paramB(paramB), _radius(radius), _height(height), _resolution(resolution)
+Cylinder::Cylinder(float radius, float height, float fineness) :
+	ParametricSurface(0.0f, height, height / fineness, -3.1416f, 3.1416f, 0.3927f),
+	_radius(radius), _height(height), _resolution(fineness)
 {
 }
 
 Vector* Cylinder::position(float u, float v)
 {
 	Vector* result = new Vector;
-	result->x = _paramA + _radius * cosf(u);
-	result->y = _paramB + _radius * sinf(u);
-	result->z = _resolution * v;
+	result->x = _radius * cosf(v);
+	result->y = _resolution * u;
+	result->z = _radius * sinf(v);
 	return result;
 }
 
 Vector* Cylinder::normal(float u, float v)
 {
-	Vector rDerivedU(_radius * -(sinf(u)), _radius * cosf(u), 0.0f);
-	Vector rDerivedV(0.0f, 0.0f, _resolution);
+	Vector rDerivedV(_radius * -sinf(v), 0.0f, _radius * cosf(v));
+	Vector rDerivedU(0.0f, _resolution, 0.0f);
 	Vector* result = new Vector(rDerivedU % rDerivedV);
 	return result;
 }
