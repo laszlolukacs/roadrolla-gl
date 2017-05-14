@@ -12,8 +12,8 @@ void Chicken::build()
 	Ellipsoid* head = new Ellipsoid(0.2f, 0.1f, 0.1f);
 	Ellipsoid* eye = new Ellipsoid(0.02f, 0.02f, 0.02f);
 	Ellipsoid* knee = new Ellipsoid(0.04f, 0.04f, 0.04f);
-	Cylinder* neck = new Cylinder(0.0f, 0.0f, 0.08f, 0.6f, 1.0f);
-	Cylinder* upperLeg = new Cylinder(0.0f, 0.0f, 0.03f, 0.5f, 1.0f);
+	Cylinder* neck = new Cylinder(0.08f, 0.6f, 1.0f);
+	Cylinder* upperLeg = new Cylinder(0.03f, 0.5f, 1.0f);
 	Cone* beak = new Cone(0.0f, 0.0f, 0.04f, 0.2f, 1.0f);
 	Cone* mohawk = new Cone(0.0f, 0.0f, 0.03f, 0.23f, 1.0f);
 
@@ -71,9 +71,8 @@ void Chicken::render()
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(0.3f, 1.6f, 0.0f);
+	glTranslatef(0.2f, 1.0f, 0.0f);
 	glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_neck->render();
 	glPopMatrix();
 
@@ -123,16 +122,25 @@ void Chicken::render()
 	glTranslatef(-0.08f, 0.4f, -0.2f);
 	glRotatef(-80.0f, 1.0f, 0.0f, 0.0f);
 	glRotatef(20.0f, 0.0f, 1.0f, 0.0f);
+	glPushMatrix();
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_upperLeg->render();
+	glPopMatrix();
 	glPushMatrix();
 	_knee->render();
 	glRotatef(120.0f, 0.0f, 1.0f, 0.0f);
+	glPushMatrix();
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_upperLeg->render();
+	glPopMatrix();
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, 0.5f);
 	glRotatef(-60.0f, 0.0f, 1.0f, 0.0f);
 	_knee->render();
+	glPushMatrix();
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_upperLeg->render();
+	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
@@ -141,16 +149,25 @@ void Chicken::render()
 	glTranslatef(-0.08f, 0.4f, 0.2f);
 	glRotatef(-110.0f, 1.0f, 0.0f, 0.0f);
 	glRotatef(20.0f, 0.0f, 1.0f, 0.0f);
+	glPushMatrix();
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_upperLeg->render();
+	glPopMatrix();
 	glPushMatrix();
 	_knee->render();
 	glRotatef(120.0f, 0.0f, 1.0f, 0.0f);
+	glPushMatrix();
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_upperLeg->render();
+	glPopMatrix();
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, 0.5f);
 	glRotatef(-60.0f, 0.0f, 1.0f, 0.0f);
 	_knee->render();
+	glPushMatrix();
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	_upperLeg->render();
+	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
