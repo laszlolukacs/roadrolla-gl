@@ -19,8 +19,8 @@ void RoadRoller::build()
 
 	Cube* chassisBottom = new Cube(1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 2.0f);
 	Cube* chassisMiddle = new Cube(3.0f, 1.5f, 1.0f, 6.0f, 0.5f, 2.0f);
-	Cube* chassisCockpit = new Cube(1.0f, 1.5f, 0.7f, 2.0f, -1.5f, 1.4f);
-	Cube* chassisTop = new Cube(1.13f, 3.0f, 1.13f, 2.26f, -0.13f, 2.26f);
+	Cube* chassisCockpit = new Cube(1.0f, 3.0f, 0.7f, 2.0f, 1.5f, 1.4f);
+	Cube* chassisTop = new Cube(1.13f, 3.13f, 1.13f, 2.26f, 0.13f, 2.26f);
 
 	chassisBottom->tesselate();
 	chassisMiddle->tesselate();
