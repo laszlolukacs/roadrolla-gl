@@ -38,7 +38,7 @@ struct Camera
 		this->upDir = Vector(0.0f, 1.0f, 0.0f);
 		this->fov = 90.0f;
 		this->nearClippingPane = 1.0f;
-		this->rearClippingPane = 45.0f;
+		this->rearClippingPane = 90.0f;
 		this->viewportLeft = this->viewportBottom = 0;
 		this->viewportWidth = this->viewportHeight = 600;
 	}
