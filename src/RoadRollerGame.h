@@ -36,9 +36,8 @@ private:
 	RoadRoller _roadRoller;
 
 public:
-	Camera _cam;
-	Camera _inCar;
-	Camera _chickenView;
+	Camera inCam;
+	Camera chaseCam;
 
 	RoadRollerGame();
 	void build();

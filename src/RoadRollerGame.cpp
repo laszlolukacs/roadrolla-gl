@@ -48,19 +48,6 @@ void RoadRollerGame::build()
 	_sun.diffuseIntensity = Color(1.0f, 0.51f, 0.278f);
 	_sun.specularIntensity = Color(0.8f, 0.8f, 0.8f);
 	_sun.position = _lightDir;
-
-	_cam.eyePos = Vector(0.0f, 2.0f, -2.0f);
-	_cam.lookAt = Vector(0.0f, 0.0f, 0.0f);
-	_cam.upDir = Vector(0.0f, 1.0f, 0.0f);
-	_cam.fov = 60.0f;
-	_cam.viewportBottom = 0;
-	_cam.viewportLeft = 0;
-	_cam.viewportWidth = _cam.viewportHeight = 300;
-	_cam.nearClippingPane = 1.0f;
-	_cam.rearClippingPane = 56.0f;
-
-	_cam.setupProjection_gl();
-	_cam.setupModelView_gl();
 	_sun.setup_gl();
 
 	Plane* grass = new Plane(100.0f, 100.0f, -0.002f, 1.0f);
@@ -92,37 +79,31 @@ void RoadRollerGame::build()
 		tempPosition.z = 3.0f;
 		_chicken[i].setPosition(tempPosition);
 	}
-	_chickenView.eyePos = tempPosition;
-	_chickenView.eyePos.y = tempPosition.y + 0.8f;
-	_chickenView.lookAt = tempPosition;
-	_chickenView.lookAt.x = tempPosition.x + 4.0f;
-	_chickenView.upDir = Vector(0.0f, 1.0f, 0.0f);
-	_chickenView.fov = 100.0f;
-	_chickenView.viewportBottom = 0;
-	_chickenView.viewportLeft = 300;
-	_chickenView.viewportWidth = 300;
-	_chickenView.viewportHeight = 300;
-	_chickenView.nearClippingPane = 0.3f;
-	_chickenView.rearClippingPane = 20.0f;
 
 	_roadRoller.build();
 	tempPosition.x = -4.0f;
 	tempPosition.z = 0.0f;
 	_roadRoller.setPosition(tempPosition);
 
-	_inCar.eyePos = tempPosition;
-	_inCar.eyePos.x = tempPosition.x + 1.0f;
-	_inCar.eyePos.y = tempPosition.y + 4.0f;
-	_inCar.lookAt = tempPosition;
-	_inCar.lookAt.x = tempPosition.x + 6.0f;
-	_inCar.upDir = Vector(0.0f, 1.0f, 0.0f);
-	_inCar.fov = 80.0f;
-	_inCar.viewportBottom = 300;
-	_inCar.viewportLeft = 0;
-	_inCar.viewportWidth = 600;
-	_inCar.viewportHeight = 300;
-	_inCar.nearClippingPane = 2.0f;
-	_inCar.rearClippingPane = 40.0f;
+	inCam.eyePos = tempPosition;
+	inCam.eyePos.x = tempPosition.x + 1.0f;
+	inCam.eyePos.y = tempPosition.y + 4.0f;
+	inCam.frontDir = Vector(1.0f, 0.0f, 0.0f);
+	inCam.upDir = Vector(0.0f, 1.0f, 0.0f);
+	inCam.fov = 80.0f;
+	inCam.nearClippingPane = 2.0f;
+
+	chaseCam.setProjectionMatrix();
+	chaseCam.setModelViewMatrix();
+
+	chaseCam.eyePos = tempPosition;
+	chaseCam.eyePos.x = tempPosition.x - 8.0f;
+	chaseCam.eyePos.y = tempPosition.y + 8.0f;
+	chaseCam.frontDir = Vector(0.8f, -0.6f, 0.0f);
+	chaseCam.upDir = Vector(0.0f, 1.0f, 0.0f);
+
+	chaseCam.setProjectionMatrix();
+	chaseCam.setModelViewMatrix();
 }
 
 void RoadRollerGame::accelerateRoller()
@@ -171,8 +152,8 @@ void RoadRollerGame::update(float deltaT, float periodTime)
 		_sun.diffuseIntensity.b -= 0.0001203f;
 	}
 
-	_lightDir.z = 20.0f * cosf(time);
-	_lightDir.y = 20.0f * sinf(time);
+	_lightDir.z = 1000.0f * cosf(time);
+	_lightDir.y = 1000.0f * sinf(time);
 	_shadowMatrixVariableMember_1 = -(_lightDir.x / _lightDir.y);
 	_shadowMatrixVariableMember_2 = -(_lightDir.z / _lightDir.y);
 	_sun.position = _lightDir;
@@ -180,22 +161,15 @@ void RoadRollerGame::update(float deltaT, float periodTime)
 	_shadowMatrix[1][0] = _shadowMatrixVariableMember_1;
 	_shadowMatrix[1][2] = _shadowMatrixVariableMember_2;
 
-	_cam.eyePos.x = 5.0f * cosf(time * 0.5f);
-	_cam.eyePos.z = 5.0f * sinf(time * 0.5f);
-
 	_roadRoller.update(deltaT);
-	_inCar.eyePos.x = _roadRoller.getPosition().x;
-	_inCar.lookAt.x = 6.0f + _roadRoller.getPosition().x;
+	inCam.eyePos.x = _roadRoller.getPosition().x;
+	chaseCam.eyePos.x = _roadRoller.getPosition().x - 8.0f;
+
 	for (int i = 0; i < 3; i++)
 	{
 		_chicken[i].update(deltaT);
 		if (_chicken[i].isAlive())
 		{
-			_chickenView.eyePos = _chicken[i].getPosition();
-			_chickenView.eyePos.y = _chicken[i].getPosition().y + 0.8f;
-			_chickenView.eyePos.z = _chicken[i].getPosition().z;
-			_chickenView.lookAt = _chicken[i].getPosition();
-			_chickenView.lookAt.z = -4.0f + _chicken[i].getPosition().z;
 			distance = _chicken[i].getPosition() - _roadRoller.getPosition();
 			minimumDistance = _chicken[i].getBoundingRadius() + _roadRoller.getBoundingRadius();
 			if (distance.length() < minimumDistance)
