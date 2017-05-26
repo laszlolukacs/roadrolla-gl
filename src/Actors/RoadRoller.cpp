@@ -8,9 +8,9 @@ void RoadRoller::build()
 {
 	Vector nullVec = Vector(0.0f, 0.0f, 0.0f);
 
-	Circle* wheelSide = new Circle(0.0f, 0.0f, 0.3f, 1.0f);
-	Cylinder* wheel = new Cylinder(1.0f, 2.0f, 1.0f);
-	Cylinder* exhaust = new Cylinder(0.16f, 2.0f, 1.0f);
+	Circle* wheelSide = new Circle(0.0f, 0.0f, 0.3f, 4.0f);
+	Cylinder* wheel = new Cylinder(1.0f, 2.0f, 4.0f);
+	Cylinder* exhaust = new Cylinder(0.16f, 2.0f, 2.0f);
 
 	_acceleration = _velocity = _position = nullVec;
 	_rotateVelocity = 0.0f;
@@ -128,6 +128,7 @@ void RoadRoller::render()
 		_wheelMaterial.setup_gl();
 	glPushMatrix();
 	glTranslatef(1.8f, 1.0f, -0.7f);
+	glRotatef(18.0f, 0.0f, 1.0f, 0.0f);
 	_exhaust->render();
 	glPopMatrix();
 }

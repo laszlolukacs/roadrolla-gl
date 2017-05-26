@@ -192,14 +192,14 @@ void RoadRollerGame::render()
 	_grassyTexture.setup_gl();
 
 	glPushMatrix();
-	glTranslatef(0.0f, -0.002f, 0.0f);
+	glTranslatef(-50.0f, -0.002f, -50.0f);
 	_grassy->render();
 	glPopMatrix();
 
 	_roadMaterial.setup_gl();
 	_roadTexture.setup_gl();
 	glPushMatrix();
-	glTranslatef(0.0f, -0.001f, 0.00f);
+	glTranslatef(-50.0f, -0.001f, -4.0f);
 	_road->render();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
