@@ -4,7 +4,9 @@ Circle::Circle()
 {
 }
 
-Circle::Circle(float paramA, float paramB, float radius, float resolution) : ParametricSurface(-3.1415926535f, 3.1415926535f, 0.39269908f, -3.1415926535f, 3.1415926535f, 0.39269908f), _paramA(paramA), _paramB(paramB), _radius(radius), _resolution(resolution)
+Circle::Circle(float paramA, float paramB, float radius, float resolution)
+	: ParametricSurface(0.0f, 6.2832f, 1.5708f / (2.0f * resolution), true, 0.0f, 6.2832f, 1.5708f / (2.0f * resolution), true),
+	_paramA(paramA), _paramB(paramB), _radius(radius), _resolution(resolution)
 {
 }
 

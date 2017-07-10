@@ -4,7 +4,9 @@ Plane::Plane()
 {
 }
 
-Plane::Plane(float width, float depth, float height, float resolution) : ParametricSurface(-(width / 2.0f), width / 2.0f, width / resolution, -(depth / 2.0f), depth / 2.0f, depth / resolution), _height(height), _resolution(resolution)
+Plane::Plane(float width, float depth, float height, float resolution) :
+	ParametricSurface(0.0f, width, width / resolution, false, 0.0f, depth, depth / resolution, false),
+	_height(height), _resolution(resolution)
 {
 }
 

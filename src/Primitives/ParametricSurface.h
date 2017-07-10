@@ -23,11 +23,17 @@ protected:
 	/* The details of the 'u' axis of the parametric surface. */
 	float _uMin, _uMax, _uStep;
 
+	/* Indicates whether the parametric surface loops around the 'u' axis. */
+	bool _uLoop = false;
+
 	/* The details of the 'v' axis of the parametric surface. */
 	float _vMin, _vMax, _vStep;
 
-	/* The number of individual 'v' values used by this instance of ParametricSurface */
-	int _vLength;
+	/* Indicates whether the parametric surface loops around the 'v' axis. */
+	bool _vLoop = false;
+
+	/* The number of individual 'u' and 'v' values used by this instance of ParametricSurface */
+	int _uLength, _vLength;
 
 	/**
 	* Gets the total amount of vertices needed by this instance of ParametricSurface, based on the boundaries of the 'u' and 'v' values.
@@ -65,11 +71,13 @@ public:
 	* @param uMin The lower value of the 'u'
 	* @param uMax The upper value of the 'u'
 	* @param uStep The incrementing value of 'u'
+	* @param uLoop Indicates whether the surface loops around the 'u' axis
 	* @param vMin The lower value of the 'v'
 	* @param vMax The upper value of the 'v'
 	* @param vStep The incrementing value of 'v'
+	* @param vLoop Indicates whether the surface loops around the 'v' axis
 	*/
-	ParametricSurface(float uMin, float uMax, float uStep, float vMin, float vMax, float vStep);
+	ParametricSurface(float uMin, float uMax, float uStep, bool uLoop, float vMin, float vMax, float vStep, bool vLoop);
 
 	/**
 	* Gets the position vector of the parametric surface at the given 'u' and 'v' coordinates.

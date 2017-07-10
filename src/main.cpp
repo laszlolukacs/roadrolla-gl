@@ -49,21 +49,25 @@ void handleMouseInput(float deltaX, float deltaY)
 void handleKeyboardInput(bool keyStates[])
 {
 	float cameraSpeed = 0.0001f;
-	if (keyStates['w']) {
+	unsigned char w = 'w';
+	if (keyStates[w]) {
 		roamingCam.move(roamingCam.frontDir * cameraSpeed);
 	}
 
-	if (keyStates['s'])
+	unsigned char s = 's';
+	if (keyStates[s])
 	{
 		roamingCam.move(roamingCam.frontDir * -1.0f * cameraSpeed);
 	}
 
-	if (keyStates['a'])
+	unsigned char a = 'a';
+	if (keyStates[a])
 	{
 		roamingCam.move((roamingCam.frontDir % roamingCam.upDir).normalize() * -1.0f * cameraSpeed);
 	}
 
-	if (keyStates['d'])
+	unsigned char d = 'd';
+	if (keyStates[d])
 	{
 		roamingCam.move((roamingCam.frontDir % roamingCam.upDir).normalize() * cameraSpeed);
 	}

@@ -90,25 +90,25 @@ void Chicken::render()
 	glPushMatrix();
 	if (!_isShadowMode)
 		_limbMaterial.setup_gl();
-	glTranslatef(0.25f, -0.028f, 0.0f);
+	glTranslatef(0.168f, -0.028f, 0.0f);
 	glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
 	_beak->render();
 	glPopMatrix();
 	glPushMatrix();
 	if (!_isShadowMode)
 		_limbMaterial.setup_gl();
-	glTranslatef(0.12f, 0.185f, 0.0f);
+	glTranslatef(0.12f, 0.08f, 0.0f);
 	glPushMatrix();
 	glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
 	_mohawk->render();
 	glPopMatrix();
-	glTranslatef(-0.06f, 0.0, 0.0f);
+	glTranslatef(-0.06f, 0.0f, 0.0f);
 	_mohawk->render();
-	glTranslatef(-0.06f, 0.0, 0.0f);
+	glTranslatef(-0.06f, 0.0f, 0.0f);
 	_mohawk->render();
-	glTranslatef(-0.06f, 0.0, 0.0f);
+	glTranslatef(-0.06f, 0.0f, 0.0f);
 	_mohawk->render();
-	glTranslatef(-0.06f, 0.0, 0.0f);
+	glTranslatef(-0.06f, 0.0f, 0.0f);
 	glPushMatrix();
 	glRotatef(20.0f, 0.0f, 0.0f, 1.0f);
 	_mohawk->render();
