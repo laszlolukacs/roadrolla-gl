@@ -93,8 +93,8 @@ void RoadRollerGame::build()
 	inCam.fov = 80.0f;
 	inCam.nearClippingPane = 2.0f;
 
-	chaseCam.setProjectionMatrix();
-	chaseCam.setModelViewMatrix();
+	inCam.setProjectionMatrix();
+	inCam.setModelViewMatrix();
 
 	chaseCam.eyePos = tempPosition;
 	chaseCam.eyePos.x = tempPosition.x - 8.0f;

@@ -33,8 +33,8 @@ struct Camera
 	 */
 	Camera()
 	{
-		this->eyePos = Vector(0.0f, 0.0f, 3.0f);
-		this->frontDir = Vector(0.0f, 0.0f, -1.0f);
+		this->eyePos = Vector(0.0f, 3.0f, 3.0f);
+		this->frontDir = Vector(0.0f, -0.75f, 0.25f);
 		this->upDir = Vector(0.0f, 1.0f, 0.0f);
 		this->fov = 90.0f;
 		this->nearClippingPane = 1.0f;
