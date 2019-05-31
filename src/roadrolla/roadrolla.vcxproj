@@ -22,32 +22,32 @@
     <ProjectGuid>{840F6E23-164C-4208-9C1D-C9A7A4510B6B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>roadrolla</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -71,15 +71,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bld\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bld\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bld\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bld\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,6 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%GLUT_HOME%\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,6 +113,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%GLUT_HOME%\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +135,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%GLUT_HOME%\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,6 +160,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%GLUT_HOME%\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,47 +176,47 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Actors\Chicken.cpp" />
-    <ClCompile Include="src\Actors\RoadRoller.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Primitive.cpp" />
-    <ClCompile Include="src\Primitives\Circle.cpp" />
-    <ClCompile Include="src\Primitives\Cone.cpp" />
-    <ClCompile Include="src\Primitives\Cube.cpp" />
-    <ClCompile Include="src\Primitives\Cylinder.cpp" />
-    <ClCompile Include="src\Primitives\Ellipsoid.cpp" />
-    <ClCompile Include="src\Primitives\ParametricSurface.cpp" />
-    <ClCompile Include="src\Primitives\Plane.cpp" />
-    <ClCompile Include="src\RoadRollerGame.cpp" />
+    <ClCompile Include="Actors\Chicken.cpp" />
+    <ClCompile Include="Actors\RoadRoller.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Primitives\Circle.cpp" />
+    <ClCompile Include="Primitives\Cone.cpp" />
+    <ClCompile Include="Primitives\Cube.cpp" />
+    <ClCompile Include="Primitives\Cylinder.cpp" />
+    <ClCompile Include="Primitives\Ellipsoid.cpp" />
+    <ClCompile Include="Primitives\ParametricSurface.cpp" />
+    <ClCompile Include="Primitives\Plane.cpp" />
+    <ClCompile Include="RoadRollerGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Actor.h" />
-    <ClInclude Include="src\Actors\Chicken.h" />
-    <ClInclude Include="src\Actors\RoadRoller.h" />
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Color.h" />
-    <ClInclude Include="src\LightSource.h" />
-    <ClInclude Include="src\Material.h" />
-    <ClInclude Include="src\Primitive.h" />
-    <ClInclude Include="src\Primitives\Circle.h" />
-    <ClInclude Include="src\Primitives\Cone.h" />
-    <ClInclude Include="src\Primitives\Cube.h" />
-    <ClInclude Include="src\Primitives\Cylinder.h" />
-    <ClInclude Include="src\Primitives\Ellipsoid.h" />
-    <ClInclude Include="src\Primitives\ParametricSurface.h" />
-    <ClInclude Include="src\Primitives\Plane.h" />
-    <ClInclude Include="src\RoadRollerGame.h" />
-    <ClInclude Include="src\Texture.h" />
-    <ClInclude Include="src\Textures\GrassTexture.h" />
-    <ClInclude Include="src\Textures\RoadTexture.h" />
-    <ClInclude Include="src\Textures\WheelTexture.h" />
-    <ClInclude Include="src\Vector.h" />
+    <ClInclude Include="Actor.h" />
+    <ClInclude Include="Actors\Chicken.h" />
+    <ClInclude Include="Actors\RoadRoller.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="LightSource.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Primitive.h" />
+    <ClInclude Include="Primitives\Circle.h" />
+    <ClInclude Include="Primitives\Cone.h" />
+    <ClInclude Include="Primitives\Cube.h" />
+    <ClInclude Include="Primitives\Cylinder.h" />
+    <ClInclude Include="Primitives\Ellipsoid.h" />
+    <ClInclude Include="Primitives\ParametricSurface.h" />
+    <ClInclude Include="Primitives\Plane.h" />
+    <ClInclude Include="RoadRollerGame.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Textures\GrassTexture.h" />
+    <ClInclude Include="Textures\RoadTexture.h" />
+    <ClInclude Include="Textures\WheelTexture.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\roadrolla.ico" />
+    <Image Include="roadrolla.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="res\roadrolla.rc" />
+    <ResourceCompile Include="roadrolla.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

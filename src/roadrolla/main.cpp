@@ -1,14 +1,14 @@
 // See LICENSE for details.
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+
 #include <GL/freeglut.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-#include <windows.h>
+#include <Windows.h>
 #endif // to make it work on Windows, too
-
-#include <iostream>
 
 #include "Camera.h"
 #include "RoadRollerGame.h"
@@ -96,6 +96,22 @@ void onKeyboard(unsigned char key, int x, int y)
 		g_keystates[key] = true;
 	}
 
+	// Press ALT or  SHIFT or  CTRL in combination with other keys.
+	printf("key_code =%d  \n", key);
+
+	int mod = glutGetModifiers();
+
+	if (mod != 0) //ALT=4  SHIFT=1  CTRL=2
+	{
+		switch (mod)
+		{
+		case 1:  printf("SHIFT key %d\n", mod);  break;
+		case 2:  printf("CTRL  key %d\n", mod);  break;
+		case 4:  printf("ALT   key %d\n", mod);  break;
+			mod = 0;
+		}
+	}
+
 	// for one-time keypresses
 	switch (key)
 	{
@@ -110,6 +126,24 @@ void onKeyboard(unsigned char key, int x, int y)
 		break;
 	case 'b':
 		game.deccelerateRoller();
+		break;
+	case '\x0d':
+		if (mod == 4) {
+			if (g_windowed) {
+				g_clientPositionX = glutGet(GLUT_WINDOW_X);
+				g_clientPositionY = glutGet(GLUT_WINDOW_Y);
+				// hides the window's borders, puts it to (0,0), sets its size to match the current desktop resolution
+				glutFullScreen();
+				g_windowed = false;
+			}
+			else
+			{
+				glutPositionWindow(g_clientPositionX, g_clientPositionY);
+				glutReshapeWindow(g_lastClientWidth, g_lastClientHeight);
+				g_windowed = true;
+			}
+		}
+
 		break;
 	case '\x1b': // that's the 'Esc' key
 		glutLeaveMainLoop();
@@ -279,7 +313,7 @@ void onExit()
  * @param argv array of strings containing the arguments that was passed to the application
  * @return 0 after normal execution.
  */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 	printf("Roadrolla' application startup\n");
 #if defined(_DEBUG) && (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
 	SetConsoleTitle(TEXT("Roadrolla' console"));
@@ -292,6 +326,9 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("Roadrolla'");
 	atexit(onExit);
+
+
+
 	printf("GL Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("GL Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("GL Version: %s\n", glGetString(GL_VERSION));
