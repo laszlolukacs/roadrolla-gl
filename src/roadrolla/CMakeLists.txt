@@ -1,36 +1,31 @@
-# Laszlo Lukacs, 2016-12-19 03:04
-
 # includes freeglut
+cmake_path(SET GLUT_HOME_PATH $ENV{GLUT_HOME})
+set(CMAKE_PREFIX_PATH ${GLUT_HOME_PATH})
 find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIRS})
-link_directories(${GLUT_LIBRARY_DIRS})
-add_definitions(${GLUT_DEFINITIONS})
 if(NOT GLUT_FOUND)
-    message(ERROR " GLUT not found!")
+	message(ERROR " GLUT not found!")
 endif(NOT GLUT_FOUND)
 
 # include OpenGL
 find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS})
-link_directories(${OpenGL_LIBRARY_DIRS})
-add_definitions(${OpenGL_DEFINITIONS})
 if(NOT OPENGL_FOUND)
-    message(ERROR " OPENGL not found!")
+	message(ERROR " OpenGL not found!")
 endif(NOT OPENGL_FOUND)
 
-include_directories (${roadrolla-gl_SOURCE_DIR}/src)
-include_directories (${roadrolla-gl_SOURCE_DIR}/src/Actors)
-include_directories (${roadrolla-gl_SOURCE_DIR}/src/Textures)
-include_directories (${roadrolla-gl_SOURCE_DIR}/src/Primitives)
+include_directories(${roadrolla-gl_SOURCE_DIR}/src)
+include_directories(${roadrolla-gl_SOURCE_DIR}/src/Actors)
+include_directories(${roadrolla-gl_SOURCE_DIR}/src/Textures)
+include_directories(${roadrolla-gl_SOURCE_DIR}/src/Primitives)
 
-link_directories (
+
+link_directories(
 	${roadrolla-gl_BINARY_DIR}/src
 	${roadrolla-gl_SOURCE_DIR}/src/Actors
 	${roadrolla-gl_SOURCE_DIR}/src/Textures
 	${roadrolla-gl_SOURCE_DIR}/src/Primitives
 )
 
-add_executable (roadrolla
+add_executable(roadrolla
 				main.cpp
 				Primitive.cpp
 				Primitives/ParametricSurface.cpp
@@ -45,4 +40,5 @@ add_executable (roadrolla
 				RoadRollerGame.cpp
                 )
 
-target_link_libraries(roadrolla ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+target_sources(roadrolla PRIVATE roadrolla.rc)
+target_link_libraries(roadrolla OpenGL::GL OpenGL::GLU GLUT::GLUT)
