@@ -14,10 +14,15 @@ Roadrolla is an OpenGL 1.1 based 'game', originally created in 2011 as a homewor
 * Windows:
     + Set the `GLUT_HOME` environment variable to point to the actual path of [freeglut](https://www.transmissionzero.co.uk/software/freeglut-devel/), e.g. `[Environment]::SetEnvironmentVariable("GLUT_HOME", "C:\Program Files\Common Files\MSVC\freeglut", [System.EnvironmentVariableTarget]::User)`
     + Open `roadrolla.sln` with Visual Studio
-    + or build with CMake: `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/`
+    + or build with CMake: `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/` then `cmake --build ./build`
 * Debian Linux:
     + `sudo apt install cmake libglu1-mesa-dev freeglut3-dev mesa-common-dev`
     + `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/`
+    + `cmake --build ./build`
+* macOS
+    + `brew install cmake xquartz freeglut`
+    + `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/`
+    + `cmake --build ./build`
 
 ## Deployment
 Compile contents of the `src` directory & run the resulting executable.

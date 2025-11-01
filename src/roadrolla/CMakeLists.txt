@@ -1,4 +1,8 @@
 # include freeglut
+if(APPLE)
+	set(CMAKE_FIND_FRAMEWORK LAST)
+	set(GLUT_ROOT "$ENV{HOMEBREW_PREFIX}/opt/freeglut")
+endif()
 if(WIN32)
 	cmake_path(SET GLUT_HOME_PATH $ENV{GLUT_HOME})
 	set(CMAKE_PREFIX_PATH ${GLUT_HOME_PATH})
