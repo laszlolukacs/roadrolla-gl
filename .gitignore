@@ -450,3 +450,20 @@ CMakeUserPresets.json
 
 # Build results
 build/
+
+
+# Xcode
+
+## User settings
+.DS_Store
+*.pbxuser
+!default.pbxuser
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+profile
+*.moved-aside
+DerivedData
+
+# Pods - for those of you who use CocoaPods
+Pods

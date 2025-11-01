@@ -20,9 +20,9 @@ Roadrolla is an OpenGL 1.1 based 'game', originally created in 2011 as a homewor
     + `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/`
     + `cmake --build ./build`
 * macOS
-    + `brew install cmake xquartz freeglut`
-    + `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/`
-    + `cmake --build ./build`
+    + `brew install xquartz cmake libx11 libxi libxrandr libxxf86vm pkg-config mesa freeglut`
+    + Open `roadrolla.xcodeproj` with Xcode
+    + or build with CMake: `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/` then `cmake --build ./build`
 
 ## Deployment
 Compile contents of the `src` directory & run the resulting executable.
@@ -30,7 +30,8 @@ Compile contents of the `src` directory & run the resulting executable.
 ## Notes
 This project has been prepared for usage with
 * [Visual Studio 2022](https://www.visualstudio.com/vs/)
-* [CMake](https://cmake.org/) e.g. for \*NIX or cross platform builds
+* [Xcode](https://developer.apple.com/xcode/)
+* [CMake](https://cmake.org/) e.g. for cross platform builds
 
 ## Contribution guidelines
 TBD
