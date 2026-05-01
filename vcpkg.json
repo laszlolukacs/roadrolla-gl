@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "roadrolla-gl",
+  "version": "1.0",
+  "dependencies": [
+    {
+      "name": "freeglut",
+      "version>=": "3.8.0"
+    }
+  ],
+  "overrides": [
+    {
+      "name": "freeglut",
+      "version": "3.8.0"
+    }
+  ],
+  "builtin-baseline": "e778080f0d8019247d332ef3a3df1202578ca202"
+}

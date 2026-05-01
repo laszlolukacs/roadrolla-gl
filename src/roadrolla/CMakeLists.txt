@@ -4,19 +4,23 @@ if(APPLE)
 	set(GLUT_ROOT "$ENV{HOMEBREW_PREFIX}/opt/freeglut")
 endif()
 if(WIN32)
-	cmake_path(SET GLUT_HOME_PATH $ENV{GLUT_HOME})
-	set(CMAKE_PREFIX_PATH ${GLUT_HOME_PATH})
+	# Windows: vcpkg configures CMAKE_PREFIX_PATH via vcpkg.cmake toolchain
+	# If not using vcpkg, fall back to legacy GLUT_HOME environment variable
+	if(NOT CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
+		cmake_path(SET GLUT_HOME_PATH $ENV{GLUT_HOME})
+		set(CMAKE_PREFIX_PATH ${GLUT_HOME_PATH})
+	endif()
 endif()
 find_package(GLUT REQUIRED)
 if(NOT GLUT_FOUND)
-	message(ERROR " GLUT not found!")
+	message(FATAL_ERROR "GLUT not found!")
 endif(NOT GLUT_FOUND)
 
 # include OpenGL
 set(OpenGL_GL_PREFERENCE GLVND) # GLVND ABI for LINUX
 find_package(OpenGL REQUIRED)
 if(NOT OPENGL_FOUND)
-	message(ERROR " OpenGL not found!")
+	message(FATAL_ERROR "OpenGL not found!")
 endif(NOT OPENGL_FOUND)
 
 include_directories(${roadrolla-gl_SOURCE_DIR}/src)

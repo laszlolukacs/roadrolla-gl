@@ -4,6 +4,7 @@ Roadrolla is an OpenGL 1.1 based 'game', originally created in 2011 as a homewor
 ## Dependencies ##
 * [CMake](https://cmake.org/) 3.23 or newer
 * [freeglut](http://freeglut.sourceforge.net/)
+* [vcpkg](https://vcpkg.io) on Windows
 
 ## System Requirements ##
 * OpenGL 1.1 compatible video card (any video chip released after 1999 😂)
@@ -12,9 +13,10 @@ Roadrolla is an OpenGL 1.1 based 'game', originally created in 2011 as a homewor
 * `git clone git@github.com:laszlolukacs/roadrolla-gl.git`
 * `cd ./roadrolla-gl`
 * Windows:
-    + Set the `GLUT_HOME` environment variable to point to the actual path of [freeglut](https://www.transmissionzero.co.uk/software/freeglut-devel/), e.g. `[Environment]::SetEnvironmentVariable("GLUT_HOME", "C:\Program Files\Common Files\MSVC\freeglut", [System.EnvironmentVariableTarget]::User)`
+    + [Install vcpkg](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started-msbuild?pivots=shell-powershell#1---set-up-vcpkg)
     + Open `roadrolla.sln` with Visual Studio
-    + or build with CMake: `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/` then `cmake --build ./build`
+    + or build with CMake and vcpkg: `cmake -S ./ -B ./build -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"`
+    + `cmake --build ./build --config Release`
 * Debian Linux:
     + `sudo apt install cmake libglu1-mesa-dev freeglut3-dev mesa-common-dev`
     + `cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B ./build/`
